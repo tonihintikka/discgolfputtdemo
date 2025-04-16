@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
-import { ThemeProvider, CssBaseline, Container, Box, AppBar, Toolbar, Typography, IconButton } from '@mui/material'
+import { BrowserRouter as Router, Route, Routes, Navigate, Link as RouterLink } from 'react-router-dom'
+import { ThemeProvider, CssBaseline, Container, Box, AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
+import StraightenIcon from '@mui/icons-material/Straighten'; // Icon for Distance Meter
+import AdjustIcon from '@mui/icons-material/Adjust'; // Icon for Drills
 import { createTheme } from '@mui/material/styles'
 import OfflineIndicator from './components/common/OfflineIndicator'
 
@@ -10,6 +12,9 @@ import DrillSelection from './components/drills/DrillSelection'
 import DrillInstructions from './components/drills/DrillInstructions'
 import ActiveDrill from './components/drills/ActiveDrill'
 import DrillSummary from './components/drills/DrillSummary'
+
+// Distance component
+import DistanceMeter from './components/distance/DistanceMeter'
 
 // Create theme
 const theme = createTheme({
@@ -40,13 +45,23 @@ function App() {
                 color="inherit"
                 aria-label="home"
                 sx={{ mr: 2 }}
-                onClick={() => window.location.href = '/'}
+                component={RouterLink} to="/drills"
               >
-                <HomeIcon />
+                <AdjustIcon />
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Disc Golf Training
               </Typography>
+              
+              <Button 
+                color="inherit" 
+                component={RouterLink} 
+                to="/distance"
+                startIcon={<StraightenIcon />}
+              >
+                Distance
+              </Button>
+              
               <OfflineIndicator />
             </Toolbar>
           </AppBar>
@@ -58,6 +73,7 @@ function App() {
               <Route path="/practice/:drillId" element={<DrillInstructions />} />
               <Route path="/practice/:drillId/active" element={<ActiveDrill />} />
               <Route path="/results/:sessionId" element={<DrillSummary />} />
+              <Route path="/distance" element={<DistanceMeter />} />
             </Routes>
           </Box>
         </Box>
