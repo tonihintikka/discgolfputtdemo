@@ -1,5 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 
+// Add TypeScript interface augmentation for iOS-specific DeviceMotionEvent
+interface DeviceMotionEventWithPermission extends DeviceMotionEvent {
+  // This exists only in some browsers (iOS)
+}
+
+// Add the requestPermission method to the DeviceMotionEvent constructor
+interface DeviceMotionEventStatic {
+  requestPermission?: () => Promise<'granted' | 'denied'>;
+}
+
+// TypeScript augmentation to add the iOS-specific method
+declare global {
+  interface Window { 
+    DeviceMotionEvent: DeviceMotionEvent & DeviceMotionEventStatic;
+  }
+}
+
 interface StepDetectorOptions {
   threshold: number;        // Acceleration threshold to detect a step
   timeInterval: number;     // Minimum time (ms) between steps
@@ -63,9 +80,9 @@ export const useStepDetector = (options: StepDetectorOptions = {
     
     // Request permission for DeviceMotion on iOS (if needed)
     const requestPermission = async () => {
-      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      if (typeof window.DeviceMotionEvent.requestPermission === 'function') {
         try {
-          const permission = await DeviceMotionEvent.requestPermission();
+          const permission = await window.DeviceMotionEvent.requestPermission();
           if (permission === 'granted') {
             window.addEventListener('devicemotion', handleMotion);
           }

@@ -1,17 +1,18 @@
-import Dexie, { Table } from 'dexie';
+import Dexie from 'dexie';
 import { StrideCalibration, DrillSession, PuttAttempt, DistanceMeasurement } from '../../types';
 
+// Define specific tables structure with proper typing
 export class DiscGolfDatabase extends Dexie {
-  // Define tables
-  settings!: Table<StrideCalibration>;
-  sessions!: Table<DrillSession>;
-  attempts!: Table<PuttAttempt>;
-  measurements!: Table<DistanceMeasurement>;
+  // Define tables with proper Dexie.Table typing
+  settings!: Dexie.Table<StrideCalibration, string>; // Primary key is userId
+  sessions!: Dexie.Table<DrillSession, string>; // Primary key is id
+  attempts!: Dexie.Table<PuttAttempt, string>; // Primary key is id
+  measurements!: Dexie.Table<DistanceMeasurement, string>; // Primary key is id
 
   constructor() {
     super('DiscGolfTrainingDB');
     
-    // Define schema
+    // Define schema with proper type support
     this.version(1).stores({
       settings: 'userId,calibrationDate',
       sessions: 'id,drillTypeId,startTime,completed',

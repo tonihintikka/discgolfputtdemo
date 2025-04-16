@@ -1,54 +1,98 @@
-# React + TypeScript + Vite
+# Disc Golf Training PWA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Progressive Web App for disc golf putting practice and training. This application helps disc golfers track their putting sessions, measure distances, and improve their game - all while working offline on the course.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Progressive Web App**: Installable on mobile devices with offline functionality
+- **Putting Drills**: Track putting practice sessions and success rates
+- **Distance Measurement**: Built-in pedometer to measure distances using device motion sensors
+- **Offline Support**: Full functionality without an internet connection
+- **Responsive Design**: Works on all devices and orientations
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React 18+ with TypeScript
+- **UI Framework**: Material UI (MUI) v5
+- **Build Tool**: Vite
+- **PWA Support**: vite-plugin-pwa with Workbox
+- **Routing**: React Router v6
+- **Storage**: IndexedDB with Dexie.js
+- **Motion Detection**: DeviceMotionEvent API
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Getting Started
+
+### Prerequisites
+
+- Node.js 16+
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/discgolfputt.git
+cd discgolfputt
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Available Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## Deployment
+
+This project can be easily deployed to Vercel:
+
+1. Push your code to a Git repository (GitHub, GitLab, Bitbucket)
+2. Import the project in Vercel
+3. Vercel will automatically detect it's a Vite project
+4. Use default settings:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Deploy!
+
+## Project Structure
+
 ```
+disc-golf-pwa/
+├── public/              # Static assets
+├── src/
+│   ├── components/      # React components
+│   │   ├── layout/      # App shell components
+│   │   └── common/      # Reusable UI components
+│   │   
+│   ├── hooks/           # Custom React hooks
+│   ├── services/        # Service layer
+│   │   ├── storage/     # IndexedDB storage
+│   │   └── pedometer/   # Distance calculation
+│   ├── theme/           # Material UI theme
+│   ├── types/           # TypeScript types
+│   ├── App.tsx          # Main application component
+│   └── main.tsx         # Application entry point
+└── docs/                # Documentation
+```
+
+## Offline Capabilities
+
+This PWA works offline through:
+- Service Worker caching with Workbox
+- IndexedDB for local data storage
+- Installable on mobile home screens
+
+## License
+
+MIT
+
+---
+
+Built with ❤️ for disc golfers
