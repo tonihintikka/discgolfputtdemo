@@ -1,0 +1,25 @@
+# MUI Component Consistency
+
+## Critical Rules
+
+- Prioritize using standard MUI components (`@mui/material`) for UI elements (Buttons, Cards, Lists, Inputs, etc.) unless a custom component is explicitly justified by unique project needs not covered by MUI.
+- Apply MUI Theming consistently for colors, typography, and spacing to maintain a unified look and feel aligned with Material Design 3.
+- Ensure interactive elements (buttons, inputs) follow MUI accessibility guidelines (e.g., proper labeling, keyboard navigation).
+- When choosing components, consider their suitability for mobile-first design and responsiveness.
+
+## Examples
+
+<example>
+  Using `<Button variant="contained">` for primary actions.
+  Using `<TextField>` for user inputs.
+  Using `<Card>` to display drill summaries or stats.
+  Applying theme colors consistently via `sx` prop or `styled` components (e.g., `color: 'primary.main'`).
+  Designing layouts with `<Grid>` or `<Stack>` for responsiveness.
+</example>
+
+<example type="invalid">
+  Using custom-styled `<div>` elements instead of MUI `<Button>` for interactive buttons.
+  Inconsistent typography (font sizes, weights) across different screens.
+  Mixing MUI components with another UI library (like Bootstrap) within the same feature without clear separation or justification.
+  Creating layouts that do not adapt well to smaller screen sizes.
+</example> 

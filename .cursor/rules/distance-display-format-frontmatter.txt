@@ -1,0 +1,5 @@
+---
+description: Ensures consistent display of measured distances throughout the app. Apply when implementing or updating UI components that show distance measurements obtained from the pedometer or other sources. Consistency helps user understanding and meets the requirement to show both metric and imperial units.
+globs:
+alwaysApply: false
+--- 

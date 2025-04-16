@@ -1,0 +1,5 @@
+---
+description: This rule guides the implementation of offline functionality for the Disc Golf PWA, focusing on core features like putting drills and distance measurement. Apply when designing or implementing features that need to work without an internet connection, managing local data storage (IndexedDB), or configuring the service worker. Ensures the app meets the core requirement of being usable on the practice field.
+globs:
+alwaysApply: false
+--- 

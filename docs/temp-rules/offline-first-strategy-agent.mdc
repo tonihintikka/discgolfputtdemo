@@ -1,0 +1,26 @@
+# Offline-First Strategy
+
+## Critical Rules
+
+- Implement a service worker to cache essential application assets (JS, CSS, core data) for offline access.
+- Use IndexedDB for storing user-generated data locally (e.g., putting statistics, drill progress, measured distances, user settings like stride length).
+- Ensure core functionalities (starting drills, recording putts, using the distance meter) work seamlessly offline.
+- Provide clear UI feedback to the user about the app's offline status and data synchronization state (if syncing is implemented later).
+- Design data structures in IndexedDB logically for efficient querying and updating.
+
+## Examples
+
+<example>
+  Registering a service worker in `index.ts` or `App.tsx`.
+  Using a library like `workbox` to simplify service worker generation and caching strategies.
+  Creating IndexedDB object stores for `drills`, `stats`, `settings`.
+  Wrapping data fetching/updating logic with checks for offline status and using local data as a fallback.
+  Displaying a small indicator when the app is operating offline.
+</example>
+
+<example type="invalid">
+  Relying solely on `localStorage` for large datasets (use IndexedDB instead).
+  Fetching critical data (like drill definitions) directly from a server without caching them for offline use.
+  Allowing users to initiate actions that require internet connectivity while offline without proper feedback.
+  Not handling potential errors during IndexedDB operations.
+</example> 

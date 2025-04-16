@@ -1,0 +1,24 @@
+# Distance Display Format
+
+## Critical Rules
+
+- Always display distances calculated via the pedometer (or other primary methods) with both metric (meters, `m`) and imperial (feet, `ft`) units.
+- Clearly label which value is which (e.g., "10.2 m / 33.5 ft").
+- Use a reasonable number of decimal places (e.g., one for meters, zero or one for feet).
+- Ensure the conversion factor from meters to feet (approximately 3.28084) is applied correctly and consistently.
+- The primary stored value should be in meters (as derived from stride length in meters).
+
+## Examples
+
+<example>
+  Displaying a measured putt distance as: `Distance: 7.5 m / 24.6 ft`
+  Storing the value `7.5` (meters) in IndexedDB.
+  Using a utility function `formatDistance(meters: number): string` that returns the formatted string.
+</example>
+
+<example type="invalid">
+  Displaying only meters: `Distance: 7.5 m`
+  Displaying only feet: `Distance: 24.6 ft`
+  Using inconsistent labeling or formatting: `7.5m (24ft 7in)`
+  Rounding feet incorrectly or using too many decimal places: `7.5 m / 33.464567 ft`
+</example> 

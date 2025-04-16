@@ -1,0 +1,5 @@
+---
+description: This rule ensures consistent usage of Material UI (MUI) components throughout the Disc Golf Training PWA. Apply when adding new UI elements, choosing components for features (like drill selection, distance display, start/stop buttons), or refactoring existing UI code. Adherence promotes visual consistency aligned with Material Design principles, improves user experience, and leverages MUI's theming capabilities effectively, as recommended by Material Design guidelines for platform consistency.
+globs:
+alwaysApply: false
+--- 
