@@ -3,188 +3,97 @@
 Pedometer Implementation
 
 **As a** disc golfer
-**I want** to measure the distance to my lie using my device's sensors
-**so that** I can accurately record putting distances during practice
+**I want** to measure distances accurately by walking using my phone's motion sensors
+**so that** I can easily check distances on the course without extra equipment.
 
 ## Status
 
-Draft
+In Progress
 
 ## Context
 
-This is the first story in Epic-3 (Distance Measurement Features). It focuses on implementing a pedometer-based distance measurement system using the device's motion sensors (accelerometer). This feature is critical because accurate distance measurement is fundamental to tracking putting performance by distance and for providing appropriate practice challenges.
+This story focuses on implementing the core pedometer functionality using the device's accelerometer. It involves capturing motion data, counting steps, allowing stride length calibration, and providing basic controls. This feature is crucial for enabling quick distance checks during practice or casual rounds.
 
-The approach uses DeviceMotionEvent API to capture motion data, which requires user permission. The system will detect steps as the user walks from the basket to their disc (lie) and calculate the distance based on the user's calibrated stride length. This method was chosen over GPS for short-distance accuracy.
-
-This story assumes that Epic-1 Story-1 (Project Setup) has been completed, providing the foundational application infrastructure.
+This story builds upon the PWA foundation (Epic 1) and utilizes the local storage setup (Epic 4) for saving calibration settings.
 
 ## Estimation
 
-Story Points: 4
+Story Points: 3
 
 ## Tasks
 
-1. - [ ] Implement Device Motion Access
-   1. - [ ] Create permission request flow
-   2. - [ ] Implement accelerometer data capture
-   3. - [ ] Build error handling for unsupported devices
-   4. - [ ] Set up motion event listeners
-
-2. - [ ] Create Step Detection Algorithm
-   1. - [ ] Implement motion pattern recognition
-   2. - [ ] Apply threshold-based step detection
-   3. - [ ] Add noise filtering for motion data
-   4. - [ ] Build step counter with real-time updates
-
-3. - [ ] Develop Stride Length Calibration
-   1. - [ ] Create calibration UI
-   2. - [ ] Implement calibration process flow
-   3. - [ ] Store calibration data locally
-   4. - [ ] Add manual stride length input option
-
-4. - [ ] Build Distance Calculation Mechanism
-   1. - [ ] Implement steps-to-distance conversion
-   2. - [ ] Create meter-to-feet conversion
-   3. - [ ] Add real-time distance display
-   4. - [ ] Implement distance rounding/formatting
-
-5. - [ ] Develop Measurement Control UI
-   1. - [ ] Create start/stop/reset controls
-   2. - [ ] Implement visual feedback during measurement
-   3. - [ ] Build measurement history feature
-   4. - [ ] Add option to apply measured distance to current drill
+1.  - [x] Create accelerometer data capture using DeviceMotionEvent (`useStepDetector` hook)
+2.  - [x] Implement basic step counting algorithm (magnitude threshold)
+3.  - [x] Build basic UI for distance meter (`DistanceMeter` component)
+4.  - [x] Develop start/stop measurement controls
+5.  - [x] Implement distance calculation based on steps and stride length (`calculateDistance` service)
+6.  - [x] Build calibration interface for stride length (inline in `DistanceMeter`)
+7.  - [x] Implement saving/loading stride calibration (`settingsStorage`)
+8.  - [x] Implement saving measurements on stop (`measurementStorage`)
+9.  - [ ] Improve Step Detection Accuracy:
+    1.  - [x] Review `useStepDetector` hook logic (threshold, smoothing, calculation).
+    2.  - [x] Increase default `threshold` value in `useStepDetector` to reduce sensitivity to noise.
+    3.  - [x] Experiment with different `threshold` and `smoothingFactor` values for better accuracy.
+    4.  - [ ] *Future:* Implement peak detection algorithm in `useStepDetector` for more robust step counting.
 
 ## Constraints
 
-- Must work on iOS and Android browsers (no native app dependencies)
-- Distance must be displayed in both meters and feet
-- Must function without internet connectivity
-- The UI must be usable while walking on a course
-- Stride length calibration should persist between sessions
-- Motion detection must be battery-efficient
+- Must function reasonably well without internet connectivity.
+- Requires user permission to access motion sensors.
+- Accuracy may vary depending on device hardware and how the user carries the phone.
+- UI must provide clear feedback on tracking status.
 
 ## Data Models / Schema
 
 ```typescript
+// From types/index.ts
+
 // User stride calibration
 interface StrideCalibration {
   userId: string;
   strideLength: number; // in meters
-  calibrationDate: number; // timestamp
-  calibrationMethod: 'automatic' | 'manual';
+  calibrationDate: Date;
+  useMetric: boolean;
 }
 
-// Step detection configuration
-interface StepDetectionConfig {
-  accelerationThreshold: number;
-  timeThreshold: number;
-  smoothingFactor: number;
-}
-
-// Measurement session
+// Distance measurement stored on stop
 interface DistanceMeasurement {
   id: string;
-  timestamp: number;
-  steps: number;
+  timestamp: Date;
   distanceMeters: number;
-  distanceFeet: number;
-  gpsCoordinates?: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
+  steps: number;
+  distanceFeet?: number;
+  location?: { // Optional GPS context
+    lat: number;
+    lng: number;
   };
-  notes?: string;
 }
 ```
 
 ## Structure
 
-New components and files to be created:
+Relevant files for this story:
 
 ```
 src/
 ├── components/
 │   └── distance/
-│       ├── PermissionRequest.tsx   # Motion sensor permission UI
-│       ├── StepCounter.tsx         # Step counting display
-│       ├── DistanceDisplay.tsx     # Distance measurement display
-│       ├── MeasurementControls.tsx # Start/stop/reset buttons
-│       ├── CalibrationWizard.tsx   # Stride length calibration
-│       └── MeasurementHistory.tsx  # Previous measurements list
+│       └── DistanceMeter.tsx    # [x] Pedometer UI and controls
 ├── hooks/
-│   ├── useMotion.ts                # Motion sensor access hook
-│   └── useStepDetector.ts          # Step detection algorithm
+│   └── useStepDetector.ts     # [x] Motion sensor and step counting logic
 ├── services/
 │   ├── pedometer/
-│   │   ├── stepDetection.ts        # Step detection algorithm
-│   │   ├── distanceCalculation.ts  # Distance calculation utilities
-│   │   └── calibration.ts          # Calibration logic
+│   │   └── distanceCalculation.ts # [x] Calculates distance from steps
 │   └── storage/
-│       └── measurementStorage.ts   # Store/retrieve measurements
+│       ├── settingsStorage.ts    # [x] Handles saving/loading stride calibration
+│       └── measurementStorage.ts # [x] Handles saving measurement results
 ├── types/
-│   └── measurements.ts             # Measurement type definitions
-└── pages/
-    └── DistancePage.tsx            # Main distance meter page
-```
-
-## Diagrams
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant PermissionUI
-    participant DeviceAPI
-    participant StepDetector
-    participant DistanceCalculator
-    participant Storage
-    
-    User->>PermissionUI: Request distance measurement
-    PermissionUI->>DeviceAPI: Request motion permissions
-    DeviceAPI-->>User: Permission prompt
-    User-->>DeviceAPI: Grant permission
-    DeviceAPI->>PermissionUI: Permission granted
-    
-    PermissionUI->>User: Show measurement controls
-    User->>StepDetector: Press "Start" button
-    
-    loop Walking
-        DeviceAPI->>StepDetector: Motion data
-        StepDetector->>StepDetector: Process motion
-        StepDetector->>DistanceCalculator: Step detected
-        DistanceCalculator->>User: Update display (steps, distance)
-    end
-    
-    User->>StepDetector: Press "Stop" button
-    StepDetector->>Storage: Save measurement
-    Storage-->>User: Confirm save
-```
-
-```mermaid
-graph TD
-    A[DistancePage] --> B[PermissionRequest]
-    A --> C[MeasurementControls]
-    A --> D[StepCounter]
-    A --> E[DistanceDisplay]
-    A --> F[MeasurementHistory]
-    
-    B -- "Permission granted" --> C
-    C -- "Start" --> G[useStepDetector]
-    G --> H[useMotion]
-    H -- "Motion data" --> G
-    G -- "Steps" --> D
-    G -- "Distance" --> E
-    
-    C -- "Save" --> I[measurementStorage]
-    I --> F
+│   └── index.ts               # [x] Contains StrideCalibration, DistanceMeasurement
+└── App.tsx                    # [x] Routing added
 ```
 
 ## Dev Notes
 
-- Review accelerometer access on different browsers/devices—Safari has stricter permission requirements
-- Consider implementing a "manual mode" fallback for devices without motion sensors
-- Use low-pass filtering to improve step detection accuracy in varied walking conditions
-- Pre-populated stride length estimates based on user height could be a helpful default
-- The UI must clearly indicate the active measurement state (idle/measuring/paused)
-- Battery consumption should be minimized by optimizing the motion event listener frequency
-- Test the step detection algorithm with varied walking patterns and on different terrains
-- Consider adding haptic feedback (via vibration API) when steps are detected 
+- Initial implementation uses a simple magnitude threshold for step detection, which is known to be sensitive to noise. Further refinement is needed (see Tasks). 
+- Consider adding a dedicated settings page for calibration later.
+- Error handling for sensor permissions and data storage needs review. 

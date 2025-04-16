@@ -24,9 +24,9 @@ interface StepDetectorOptions {
 }
 
 export const useStepDetector = (options: StepDetectorOptions = {
-  threshold: 1.2,       
+  threshold: 2.0,       // Increased from 1.2 to reduce false positives from minor movements
   timeInterval: 300,    
-  smoothingFactor: 0.3  
+  smoothingFactor: 0.2  
 }) => {
   const [steps, setSteps] = useState(0);
   const [isTracking, setIsTracking] = useState(false);
@@ -55,19 +55,22 @@ export const useStepDetector = (options: StepDetectorOptions = {
       const { x, y, z } = event.accelerationIncludingGravity;
       if (x === null || y === null || z === null) return;
       
-      // Apply low-pass filter
+      // Apply low-pass filter to smooth out noise in accelerometer data
+      // Lower smoothingFactor means less influence from new readings (stronger filtering)
       filteredAccel.current.x = options.smoothingFactor * x + (1 - options.smoothingFactor) * filteredAccel.current.x;
       filteredAccel.current.y = options.smoothingFactor * y + (1 - options.smoothingFactor) * filteredAccel.current.y;
       filteredAccel.current.z = options.smoothingFactor * z + (1 - options.smoothingFactor) * filteredAccel.current.z;
       
-      // Calculate acceleration magnitude
+      // Calculate acceleration magnitude (total movement force)
       const magnitude = Math.sqrt(
         Math.pow(filteredAccel.current.x, 2) + 
         Math.pow(filteredAccel.current.y, 2) + 
         Math.pow(filteredAccel.current.z, 2)
       );
       
-      // Check for step pattern
+      // Check for step pattern:
+      // 1. Magnitude exceeds threshold (strong enough movement)
+      // 2. Enough time has passed since last step (prevents rapid counting)
       const now = Date.now();
       if (
         magnitude > options.threshold && 

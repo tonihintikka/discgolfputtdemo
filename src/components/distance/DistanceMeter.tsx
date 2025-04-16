@@ -52,9 +52,9 @@ const DistanceMeter: React.FC = () => {
 
   // Step detector hook
   const { steps, startTracking, stopTracking } = useStepDetector({
-    threshold: 1.2,
-    timeInterval: 300,
-    smoothingFactor: 0.3
+    threshold: 2.0,         // Higher threshold to reduce noise
+    timeInterval: 350,      // Slightly longer time between steps
+    smoothingFactor: 0.2    // Stronger filtering
   });
 
   // Handle start/stop button click
@@ -209,6 +209,12 @@ const DistanceMeter: React.FC = () => {
         >
           {isTracking ? "Stop Measurement" : "Start Measurement"}
         </Button>
+        
+        {isTracking && (
+          <Alert severity="info" sx={{ mt: 2 }}>
+            For best results, carry your phone in your hand or front pocket and walk normally.
+          </Alert>
+        )}
         
         <Box sx={{ mt: 4, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
           <Typography variant="h6" gutterBottom>Settings</Typography>
