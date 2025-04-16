@@ -1,205 +1,106 @@
 # Epic-4 - Story-1
 
-Local Data Storage Implementation
+Local Data Storage
 
 **As a** disc golfer
-**I want** my putting practice data to be stored locally on my device
-**so that** I can access my statistics and continue training without internet connectivity
+**I want** my practice data to be stored locally on my device
+**so that** I can access my history and statistics without requiring internet connectivity.
 
 ## Status
 
-Draft
+In Progress
 
 ## Context
 
-This is the first story in Epic-4 (Data Storage and Statistics). It focuses on implementing a local data storage system using IndexedDB to enable offline data persistence. This feature is critical because it allows users to record and track their putting practice sessions without requiring internet connectivity, which is essential for use on disc golf courses.
+This story focuses on implementing local data storage for all application data using IndexedDB. This includes user settings, putting practice results, and distance measurement data. Local storage is essential for ensuring the app functions fully offline and preserves user data between sessions.
 
-The storage system will handle user settings (like stride length calibration), putting sessions data, and distance measurements. It must be robust, performant, and handle potential browser storage limitations gracefully. The implementation will create the foundation for all data operations in the application.
-
-This story assumes that Epic-1 Story-1 (Project Setup) has been completed, providing the foundational application infrastructure.
+This builds upon the PWA foundation (Epic 1) and supports both the Putting Practice module (Epic 2) and Distance Measurement features (Epic 3).
 
 ## Estimation
 
-Story Points: 3
+Story Points: 2
 
 ## Tasks
 
-1. - [ ] Design IndexedDB Schema
-   1. - [ ] Define object store structures
-   2. - [ ] Determine indices for efficient querying
-   3. - [ ] Create version upgrade path for future changes
-   4. - [ ] Document schema design decisions
+1. - [x] Set up IndexedDB schema
+   1. - [x] Define database structure using Dexie.js
+   2. - [x] Create tables for settings, sessions, attempts, and measurements
+   3. - [x] Configure indices for efficient queries
 
-2. - [ ] Implement Database Initialization
-   1. - [ ] Create database connection handling
-   2. - [ ] Implement object store creation
-   3. - [ ] Add error handling for database operations
-   4. - [ ] Set up version migration mechanism
+2. - [x] Implement Storage Service
+   1. - [x] Create settings storage methods (calibration settings)
+   2. - [x] Implement sessions storage methods (drill sessions)
+   3. - [x] Implement attempts storage methods (putting attempts)
+   4. - [x] Create measurements storage methods (distance measurements)
 
-3. - [ ] Build CRUD Operations for Settings
-   1. - [ ] Implement user settings storage
-   2. - [ ] Create stride length calibration storage
-   3. - [ ] Build preferences persistence
-   4. - [ ] Add theme settings storage
+3. - [ ] Add History Viewing Capabilities
+   1. - [x] Create practice history component
+   2. - [x] Implement filters by date, drill type
+   3. - [ ] Add detail view for past sessions
 
-4. - [ ] Implement Session Data Storage
-   1. - [ ] Create putting session storage operations
-   2. - [ ] Build attempt tracking persistence
-   3. - [ ] Implement drill configuration storage
-   4. - [ ] Add session summary calculations
-
-5. - [ ] Develop Measurement Storage
-   1. - [ ] Implement distance measurement persistence
-   2. - [ ] Build measurement history retrieval
-   3. - [ ] Create measurement filtering options
-   4. - [ ] Add data export functionality
-
-6. - [ ] Create Storage Service Abstraction
-   1. - [ ] Implement service interfaces
-   2. - [ ] Build React hooks for data access
-   3. - [ ] Add loading/error state handling
-   4. - [ ] Implement storage quota management
+4. - [ ] Implement Data Management
+   1. - [ ] Add data clearing functionality
+   2. - [ ] Create backup mechanism (future)
+   3. - [ ] Build data export feature (future)
 
 ## Constraints
 
-- Must function completely offline without server connectivity
-- Data must persist across browser sessions and app restarts
-- Storage operations must be performant, especially during active practice
-- Must handle storage limitations gracefully with user feedback
-- The interface must support future sync capabilities when backend is added
+- Must function completely offline
+- Must persist data between sessions
+- Should handle potential storage limitations gracefully
+- Must maintain performance even with large datasets
 
 ## Data Models / Schema
 
 ```typescript
-// IndexedDB database structure
-interface AppDatabase {
-  name: string;
-  version: number;
-  objectStores: {
-    settings: ObjectStore;
-    sessions: ObjectStore;
-    measurements: ObjectStore;
-  };
-}
+// Implemented in src/services/storage/database.ts
 
-// Object store definition
-interface ObjectStore {
-  name: string;
-  keyPath: string;
-  autoIncrement: boolean;
-  indices: Index[];
-}
+// Define specific tables structure with proper typing
+export class DiscGolfDatabase extends Dexie {
+  // Define tables with proper Dexie.Table typing
+  settings!: Dexie.Table<StrideCalibration, string>; // Primary key is userId
+  sessions!: Dexie.Table<DrillSession, string>; // Primary key is id
+  attempts!: Dexie.Table<PuttAttempt, string>; // Primary key is id
+  measurements!: Dexie.Table<DistanceMeasurement, string>; // Primary key is id
 
-// Index definition
-interface Index {
-  name: string;
-  keyPath: string;
-  options: {
-    unique: boolean;
-    multiEntry?: boolean;
-  };
-}
-
-// Database query options
-interface QueryOptions {
-  store: string;
-  index?: string;
-  range?: IDBKeyRange;
-  direction?: IDBCursorDirection;
-  limit?: number;
-}
-
-// Database service result
-interface StorageResult<T> {
-  success: boolean;
-  data?: T;
-  error?: Error;
-  timestamp: number;
+  constructor() {
+    super('DiscGolfTrainingDB');
+    
+    // Define schema with proper type support
+    this.version(1).stores({
+      settings: 'userId,calibrationDate',
+      sessions: 'id,drillTypeId,startTime,completed',
+      attempts: 'id,drillId,round,timestamp',
+      measurements: 'id,timestamp'
+    });
+  }
 }
 ```
 
 ## Structure
 
-New components and files to be created:
+Relevant files for this story:
 
 ```
 src/
 ├── services/
 │   └── storage/
-│       ├── database.ts               # Database initialization
-│       ├── storageService.ts         # Abstract storage service
-│       ├── settingsStorage.ts        # User settings storage
-│       ├── sessionStorage.ts         # Putting session storage
-│       ├── measurementStorage.ts     # Distance measurement storage
-│       └── migrationUtils.ts         # Schema migration utilities
-├── hooks/
-│   ├── useDB.ts                      # Database access hook
-│   ├── useSettings.ts                # Settings access hook
-│   ├── useSessions.ts                # Session data access hook
-│   └── useMeasurements.ts            # Measurement data access hook
+│       ├── database.ts          # [x] IndexedDB setup with Dexie.js
+│       └── storageService.ts    # [x] CRUD operations for all data types
+├── components/
+│   └── stats/
+│       ├── PracticeHistory.tsx  # [ ] History listing component
+│       └── SessionDetails.tsx   # [ ] Session detail view
 ├── types/
-│   └── storage.ts                    # Storage type definitions
-└── utils/
-    ├── storageUtils.ts               # Storage helper functions
-    └── quotaUtils.ts                 # Storage quota management
-```
-
-## Diagrams
-
-```mermaid
-graph TD
-    A[Application Components] --> B[React Hooks]
-    B --> C[Storage Services]
-    C --> D[IndexedDB]
-    
-    B --> B1[useSettings]
-    B --> B2[useSessions]
-    B --> B3[useMeasurements]
-    
-    C --> C1[settingsStorage]
-    C --> C2[sessionStorage]
-    C --> C3[measurementStorage]
-    
-    C1 --> D
-    C2 --> D
-    C3 --> D
-    
-    E[database.ts] --> D
-```
-
-```mermaid
-sequenceDiagram
-    participant Component
-    participant Hook
-    participant Service
-    participant IndexedDB
-    
-    Component->>Hook: Request data
-    Hook->>Service: Call service method
-    Service->>IndexedDB: Execute database operation
-    IndexedDB-->>Service: Return result
-    Service-->>Hook: Process and return data
-    Hook-->>Component: Update state with data
-    
-    Note over Component,IndexedDB: Data Write Flow
-    Component->>Hook: Submit data
-    Hook->>Service: Call save method
-    Service->>Service: Validate data
-    Service->>IndexedDB: Store data
-    IndexedDB-->>Service: Confirm storage
-    Service-->>Hook: Return success/error
-    Hook-->>Component: Update UI state
+│   ├── index.ts                 # [x] Basic type definitions
+│   └── drills.ts                # [x] Drill-specific types
+└── pages/
+    └── HistoryPage.tsx          # [ ] History page component
 ```
 
 ## Dev Notes
 
-- Use Dexie.js or idb library to simplify IndexedDB interactions
-- Consider implementing a caching layer for frequently accessed data
-- Add data validation before storage to prevent corrupted entries
-- Implement automatic data cleanup for old entries to manage storage quota
-- Error handling should be robust with user-friendly messages
-- Consider adding an import/export feature so users can backup their data
-- Use transaction-based operations for related data updates to ensure consistency
-- Structure the code to allow for future server synchronization
-- Test with different browser storage limits and connection states
-- Consider privacy implications and add clear instructions about stored data 
+- Consider adding data validation before storing
+- Balance between querying efficiency (indices) and storage efficiency
+- IndexedDB has storage limits that vary by browser - handle gracefully
+- May need paging for history views if the database grows large 
