@@ -5,10 +5,15 @@ A Progressive Web App for disc golf putting practice and training. This applicat
 ## Features
 
 - **Progressive Web App**: Installable on mobile devices with offline functionality
-- **Putting Drills**: Track putting practice sessions and success rates
+- **Putting Drills**: Track putting practice sessions and success rates with multiple drill types
+  - Circle 1X (3-10m) practice
+  - Circle 2 (10-20m) practice
+  - 5/5 Putts game
 - **Distance Measurement**: Built-in pedometer to measure distances using device motion sensors
 - **Offline Support**: Full functionality without an internet connection
 - **Responsive Design**: Works on all devices and orientations
+- **Practice History**: View and filter your past putting sessions
+- **Data Management**: Control your locally stored data
 
 ## Tech Stack
 
@@ -39,6 +44,9 @@ npm install
 
 # Start development server
 npm run dev
+
+# For testing on mobile devices on the same network
+npm run dev -- --host
 ```
 
 ### Available Scripts
@@ -68,18 +76,22 @@ disc-golf-pwa/
 ├── public/              # Static assets
 ├── src/
 │   ├── components/      # React components
-│   │   ├── layout/      # App shell components
-│   │   └── common/      # Reusable UI components
+│   │   ├── common/      # Reusable UI components (DistanceDisplay, StanceSelector, etc.)
+│   │   ├── drills/      # Drill-related components (DrillSelection, ActiveDrill, etc.)
+│   │   ├── distance/    # Distance measurement components (DistanceMeter)
+│   │   ├── stats/       # Statistics components (PracticeHistory)
+│   │   └── settings/    # Settings and data management components (DataManagement)
 │   │   
-│   ├── hooks/           # Custom React hooks
+│   ├── hooks/           # Custom React hooks (useStepDetector)
 │   ├── services/        # Service layer
-│   │   ├── storage/     # IndexedDB storage
-│   │   └── pedometer/   # Distance calculation
-│   ├── theme/           # Material UI theme
-│   ├── types/           # TypeScript types
-│   ├── App.tsx          # Main application component
+│   │   ├── storage/     # IndexedDB storage services
+│   │   └── pedometer/   # Distance calculation and step detection
+│   ├── types/           # TypeScript types (drills, measurements, etc.)
+│   ├── pages/           # Page-level components
+│   ├── App.tsx          # Main application with routes
 │   └── main.tsx         # Application entry point
-└── docs/                # Documentation
+└── docs/                # Documentation and user stories
+    └── stories/         # User stories for project epics
 ```
 
 ## Offline Capabilities
@@ -88,6 +100,13 @@ This PWA works offline through:
 - Service Worker caching with Workbox
 - IndexedDB for local data storage
 - Installable on mobile home screens
+
+## Features in Development
+
+- Distance measurement history view
+- Statistics visualization with charts
+- Backup and export functionality
+- Advanced step detection algorithm
 
 ## License
 
