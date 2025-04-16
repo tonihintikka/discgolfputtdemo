@@ -24,40 +24,40 @@ Story Points: 3
 
 ## Tasks
 
-1. - [ ] Create Drill Data Models
-   1. - [ ] Define TypeScript interfaces for drill types
-   2. - [ ] Implement drill configuration data structures
-   3. - [ ] Create sample drill definitions for core types
-   4. - [ ] Set up drill selection mechanism
+1. - [x] Create Drill Data Models
+   1. - [x] Define TypeScript interfaces for drill types
+   2. - [x] Implement drill configuration data structures
+   3. - [x] Create sample drill definitions for core types
+   4. - [x] Set up drill selection mechanism
 
-2. - [ ] Implement "Circle 1X" Drill (3-10m)
-   1. - [ ] Create distance-based round generation
-   2. - [ ] Implement UI for drill introduction and instructions
-   3. - [ ] Build progress tracking through drill sequence
-   4. - [ ] Create make/miss input interface
+2. - [x] Implement "Circle 1X" Drill (3-10m)
+   1. - [x] Create distance-based round generation
+   2. - [x] Implement UI for drill introduction and instructions
+   3. - [x] Build progress tracking through drill sequence
+   4. - [x] Create make/miss input interface
 
-3. - [ ] Implement "Circle 2" Drill (10-20m)
-   1. - [ ] Configure for longer distance range
-   2. - [ ] Adjust UI for longer-distance specifics
-   3. - [ ] Implement stance variation options
+3. - [x] Implement "Circle 2" Drill (10-20m)
+   1. - [x] Configure for longer distance range
+   2. - [x] Adjust UI for longer-distance specifics
+   3. - [x] Implement stance variation options
 
-4. - [ ] Build "5/5 Putts" Game
-   1. - [ ] Create station-based sequence logic
+4. - [x] Build "5/5 Putts" Game
+   1. - [x] Create station-based sequence logic
    2. - [ ] Implement consecutive makes tracking
    3. - [ ] Build completion criteria and assessment
 
-5. - [ ] Create Drill Results Display
-   1. - [ ] Design summary view for completed drills
-   2. - [ ] Implement visualization of make/miss by distance
+5. - [x] Create Drill Results Display
+   1. - [x] Design summary view for completed drills
+   2. - [x] Implement visualization of make/miss by distance
    3. - [ ] Create sharable results format
 
 ## Constraints
 
-- Distance values must be displayed in both meters and feet
-- UI must be accessible on small mobile screens during active practice
-- Drill selection and configuration should be possible without internet connectivity
-- UI elements must be large enough to interact with comfortably during disc golf practice
-- All drill configurations must be stored locally for offline use
+- [x] Distance values must be displayed in both meters and feet
+- [x] UI must be accessible on small mobile screens during active practice
+- [x] Drill selection and configuration should be possible without internet connectivity
+- [x] UI elements must be large enough to interact with comfortably during disc golf practice
+- [x] All drill configurations must be stored locally for offline use
 
 ## Data Models / Schema
 
@@ -111,22 +111,22 @@ New components and files to be created:
 src/
 ├── components/
 │   ├── drills/
-│   │   ├── DrillSelection.tsx     # Drill type selection screen
-│   │   ├── DrillInstructions.tsx  # Drill introduction and instructions
-│   │   ├── ActiveDrill.tsx        # Currently active drill interface
-│   │   ├── DrillProgress.tsx      # Progress through drill rounds
-│   │   ├── PuttResult.tsx         # Make/miss input component
-│   │   └── DrillSummary.tsx       # Completed drill results
+│   │   ├── DrillSelection.tsx     # [x] Drill type selection screen
+│   │   ├── DrillInstructions.tsx  # [x] Drill introduction and instructions
+│   │   ├── ActiveDrill.tsx        # [x] Currently active drill interface
+│   │   ├── DrillProgress.tsx      # [x] Progress through drill rounds
+│   │   ├── PuttResult.tsx         # [x] Make/miss input component
+│   │   └── DrillSummary.tsx       # [x] Completed drill results
 │   └── common/
-│       ├── DistanceDisplay.tsx    # Shows distances in m/ft
-│       └── StanceSelector.tsx     # Stance variation options
+│       ├── DistanceDisplay.tsx    # [x] Shows distances in m/ft
+│       └── StanceSelector.tsx     # [x] Stance variation options
 ├── types/
-│   └── drills.ts                  # Drill type definitions
+│   └── drills.ts                  # [x] Drill type definitions
 ├── services/
-│   └── drillService.ts            # Business logic for drills
+│   └── drillService.ts            # [x] Business logic for drills
 └── pages/
-    ├── DrillsPage.tsx             # Drill selection page
-    └── PracticePage.tsx           # Active practice page
+    ├── DrillsPage.tsx             # [ ] Drill selection page (Handled by App routing)
+    └── PracticePage.tsx           # [ ] Active practice page (Handled by App routing)
 ```
 
 ## Diagrams

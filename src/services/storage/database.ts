@@ -1,5 +1,6 @@
 import Dexie from 'dexie';
-import { StrideCalibration, DrillSession, PuttAttempt, DistanceMeasurement } from '../../types';
+import { StrideCalibration, DistanceMeasurement } from '../../types';
+import { DrillSession, PuttAttempt } from '../../types/drills';
 
 // Define specific tables structure with proper typing
 export class DiscGolfDatabase extends Dexie {

@@ -1,3 +1,6 @@
+// Re-export drill-related types
+export * from './drills';
+
 // User stride calibration
 export interface StrideCalibration {
   userId: string;

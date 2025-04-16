@@ -1,5 +1,6 @@
 import db from './database';
-import { DrillSession, PuttAttempt, DistanceMeasurement, StrideCalibration } from '../../types';
+import { StrideCalibration, DistanceMeasurement } from '../../types';
+import { DrillSession, PuttAttempt } from '../../types/drills';
 
 // Settings Storage
 export const settingsStorage = {
