@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Box, Typography, Tabs, Tab } from '@mui/material';
 import { useState } from 'react';
 import PracticeHistory from '../components/stats/PracticeHistory';
+import DataManagement from '../components/settings/DataManagement';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,6 +51,7 @@ const HistoryPage: React.FC = () => {
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="history tabs">
             <Tab label="Practice History" {...a11yProps(0)} />
             <Tab label="Distance Measurements" {...a11yProps(1)} />
+            <Tab label="Data Management" {...a11yProps(2)} />
           </Tabs>
         </Box>
         
@@ -66,6 +68,10 @@ const HistoryPage: React.FC = () => {
               We'll show your distance measurements history here in a future update.
             </Typography>
           </Box>
+        </TabPanel>
+
+        <TabPanel value={tabValue} index={2}>
+          <DataManagement />
         </TabPanel>
       </Box>
     </Container>
