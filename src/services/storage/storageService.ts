@@ -11,6 +11,7 @@ interface KeyValuePair {
 // Define session and attempt types for database storage
 interface SessionRecord {
   id?: number;
+  uuid?: string;        // Add a field to store original UUID string
   drillTypeId: string;
   startTime: number;
   endTime?: number;
@@ -56,9 +57,14 @@ class DiscGolfPuttDatabase extends Dexie {
     // Define tables and indexes
     this.version(1).stores({
       settings: 'key',                            // Settings stored by key
-      sessions: '++id, drillType, date, status',  // Drill sessions
+      sessions: '++id, drillTypeId, date, status',  // Drill sessions
       attempts: '++id, sessionId, roundIndex',    // Individual putt attempts
       measurements: '++id, type, date'            // Measurements like steps, distances
+    });
+    
+    // Upgrade to version 2 - add uuid field to sessions
+    this.version(2).stores({
+      sessions: '++id, uuid, drillTypeId, date, status', // Added uuid field
     });
   }
 }
@@ -296,8 +302,10 @@ export const sessionStorage = {
       if (typeof id === 'string' && isNaN(Number(id))) {
         // For UUID strings, we need to find it by querying all sessions
         const allSessions = await getSessions();
-        // Find the session with matching string ID
-        sessionRecord = allSessions.find(s => String(s.id) === id);
+        // Find the session with matching uuid field or string ID
+        sessionRecord = allSessions.find(s => s.uuid === id || String(s.id) === id);
+        console.log('Looking for UUID session:', id);
+        console.log('Found session:', sessionRecord);
       } else {
         // Handle numeric IDs (either direct numbers or numeric strings)
         const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
@@ -314,7 +322,8 @@ export const sessionStorage = {
       // Return a complete DrillSession object
       return {
         ...sessionRecord,
-        id: sessionRecord.id !== undefined ? String(sessionRecord.id) : '',
+        // Return the original UUID if available, otherwise use the numeric ID as string
+        id: sessionRecord.uuid || (sessionRecord.id !== undefined ? String(sessionRecord.id) : ''),
         attempts: attempts as unknown as PuttAttempt[]
       } as DrillSession;
     } catch (error) {
@@ -333,10 +342,17 @@ export const sessionStorage = {
         summary: session.summary
       };
       
+      // Store the original UUID if it's a string that's not a number
+      if (typeof session.id === 'string' && isNaN(Number(session.id))) {
+        sessionData.uuid = session.id;
+      }
+      
       // For new sessions with string IDs (like UUIDs), create a new DB record
       if (typeof session.id === 'string' && isNaN(Number(session.id))) {
-        // This is likely a UUID that hasn't been saved yet
-        await storeSession(sessionData);
+        // Log for debugging
+        console.log('Saving new session with UUID:', session.id);
+        const newId = await storeSession(sessionData);
+        console.log('Saved with DB ID:', newId);
       } 
       // For existing numeric IDs, update the record
       else if (typeof session.id === 'number' || !isNaN(Number(session.id))) {

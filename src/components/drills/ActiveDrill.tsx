@@ -49,35 +49,50 @@ const ActiveDrill: React.FC = () => {
         
         // If we have a sessionId, get the session and then the drill
         if (sessionId) {
-          console.log('Loading session with ID:', sessionId);
-          const existingSession = await sessionStorage.getSession(sessionId);
+          console.log('Loading session with ID:', sessionId, 'Type:', typeof sessionId);
           
-          if (!existingSession) {
-            console.error(`Session not found with ID: ${sessionId}`);
-            setError(`Session not found with ID: ${sessionId}`);
+          try {
+            const existingSession = await sessionStorage.getSession(sessionId);
+            
+            if (!existingSession) {
+              console.error(`Session not found with ID: ${sessionId}`);
+              setError(`Session not found with ID: ${sessionId}. Please try again or start a new drill.`);
+              setLoading(false);
+              return;
+            }
+            
+            console.log('Session loaded successfully:', existingSession);
+            setSession(existingSession);
+            
+            const drillTypeId = existingSession.drillTypeId;
+            console.log(`Loading drill type with ID: ${drillTypeId}`);
+            
+            const drillType = getDrillType(drillTypeId);
+            if (!drillType) {
+              setError(`Drill type not found for ID: ${drillTypeId}`);
+              setLoading(false);
+              return;
+            }
+            
+            console.log('Drill type loaded:', drillType.name);
+            setDrill(drillType);
+            
+            const drillRounds = getDrillRounds(drillTypeId);
+            console.log(`Loaded ${drillRounds.length} rounds for drill`);
+            setRounds(drillRounds);
+            
+            // Set current round based on attempts
+            if (existingSession.attempts && existingSession.attempts.length > 0) {
+              // Calculate which round we should be on based on attempts
+              const highestRound = Math.max(...existingSession.attempts.map(a => a.round));
+              console.log(`Setting current round to ${highestRound} based on existing attempts`);
+              setCurrentRound(highestRound);
+            }
+          } catch (sessionError) {
+            console.error('Error loading session:', sessionError);
+            setError(`Error loading session: ${sessionError instanceof Error ? sessionError.message : String(sessionError)}`);
             setLoading(false);
             return;
-          }
-          
-          console.log('Session loaded:', existingSession);
-          setSession(existingSession);
-          const drillTypeId = existingSession.drillTypeId;
-          const drillType = getDrillType(drillTypeId);
-          
-          if (!drillType) {
-            setError(`Drill type not found for ID: ${drillTypeId}`);
-            setLoading(false);
-            return;
-          }
-          
-          setDrill(drillType);
-          setRounds(getDrillRounds(drillTypeId));
-          
-          // Set current round based on attempts
-          if (existingSession.attempts && existingSession.attempts.length > 0) {
-            // Calculate which round we should be on based on attempts
-            const highestRound = Math.max(...existingSession.attempts.map(a => a.round));
-            setCurrentRound(highestRound);
           }
         }
         // Otherwise use the drillId directly
