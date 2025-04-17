@@ -1,125 +1,120 @@
 import React from 'react';
+import { DrillType } from '../../types/drills';
 import { 
+  Box, 
   Card, 
+  CardActionArea, 
   CardContent, 
-  CardActions, 
   Typography, 
-  Button, 
-  Grid, 
-  Box,
   Chip,
-  Icon
+  useTheme,
+  Grid
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { DrillType } from '../../types/drills';
 import { getDrillTypes } from '../../services/drillService';
-import DistanceDisplay from '../common/DistanceDisplay';
+import DynamicIcon from '../common/DynamicIcon';
 
 interface DrillSelectionProps {
-  onSelectDrill: (drillId: string) => void;
+  onDrillSelect: (drill: DrillType) => void;
 }
 
-const DrillSelection: React.FC<DrillSelectionProps> = ({ onSelectDrill }) => {
-  const drillTypes = getDrillTypes();
+export const DrillSelection: React.FC<DrillSelectionProps> = ({ onDrillSelect }) => {
+  const theme = useTheme();
   const navigate = useNavigate();
+  const drills = getDrillTypes();
 
-  const getDifficultyColor = (difficulty: DrillType['difficulty']) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'success';
-      case 'intermediate':
-        return 'primary';
-      case 'advanced':
-        return 'error';
-      default:
-        return 'default';
-    }
+  const handleDrillSelection = (drill: DrillType) => {
+    onDrillSelect(drill);
+    navigate(`/drills/${drill.id}`);
   };
 
-  const handleSelectDrill = (drillId: string) => {
-    onSelectDrill(drillId);
-    navigate(`/practice/${drillId}`);
+  const getDifficultyColor = (difficulty: 'beginner' | 'intermediate' | 'advanced') => {
+    if (difficulty === 'beginner') return theme.palette.success.main;
+    if (difficulty === 'intermediate') return theme.palette.info.main;
+    return theme.palette.warning.main;
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Putting Drills
+    <Box sx={{ flexGrow: 1, p: 2 }}>
+      <Typography variant="h5" component="h1" gutterBottom>
+        Select a Drill
       </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-        Select a drill to improve your putting skills
-      </Typography>
-
-      <Grid container spacing={3}>
-        {drillTypes.map((drill) => (
-          <Grid item xs={12} sm={6} md={4} key={drill.id}>
+      <Grid container spacing={2}>
+        {drills.map((drill: DrillType) => (
+          <Grid
+            key={drill.id}
+            size={{ xs: 12, sm: 6, md: 4 }}
+          >
             <Card 
+              elevation={3}
               sx={{ 
-                height: '100%', 
-                display: 'flex', 
+                height: '100%',
+                display: 'flex',
                 flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                 '&:hover': {
                   transform: 'translateY(-4px)',
-                  boxShadow: 6
+                  boxShadow: 6,
                 }
               }}
             >
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <Icon color="primary">{drill.icon}</Icon>
-                  <Typography variant="h5" component="h2">
-                    {drill.name}
-                  </Typography>
-                </Box>
-                
-                <Chip 
-                  label={drill.difficulty.charAt(0).toUpperCase() + drill.difficulty.slice(1)} 
-                  size="small" 
-                  color={getDifficultyColor(drill.difficulty) as any}
-                  sx={{ mb: 2 }}
-                />
-                
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  {drill.description}
-                </Typography>
-                
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      Distance Range
+              <CardActionArea 
+                onClick={() => handleDrillSelection(drill)}
+                sx={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'flex-start',
+                  height: '100%',
+                  p: 1
+                }}
+              >
+                <CardContent sx={{ width: '100%', p: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box 
+                      sx={{ 
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: '50%',
+                        bgcolor: theme.palette.primary.main,
+                        color: 'white',
+                        p: 1,
+                        mr: 2,
+                        width: 40,
+                        height: 40
+                      }}
+                    >
+                      <DynamicIcon iconName={drill.icon} />
+                    </Box>
+                    <Typography variant="h6" component="h2">
+                      {drill.name}
                     </Typography>
-                    <DistanceDisplay meters={drill.minDistance} variant="body2" />
-                    <Typography variant="body2" sx={{ mx: 1, display: 'inline' }}>-</Typography>
-                    <DistanceDisplay meters={drill.maxDistance} variant="body2" />
                   </Box>
                   
-                  <Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {drill.description}
+                  </Typography>
+                  
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
+                    <Chip 
+                      label={`Difficulty: ${drill.difficulty}`}
+                      size="small"
+                      sx={{ 
+                        bgcolor: getDifficultyColor(drill.difficulty),
+                        color: 'white',
+                        fontWeight: 'bold'
+                      }}
+                    />
                     <Typography variant="caption" color="text.secondary">
-                      Rounds
+                      {drill.estimatedTime ? `${drill.estimatedTime} min` : 'N/A'}
                     </Typography>
-                    <Typography variant="body2">{drill.rounds}</Typography>
                   </Box>
-                </Box>
-              </CardContent>
-              
-              <CardActions>
-                <Button 
-                  size="large" 
-                  color="primary" 
-                  fullWidth
-                  variant="contained"
-                  onClick={() => handleSelectDrill(drill.id)}
-                >
-                  Start Drill
-                </Button>
-              </CardActions>
+                </CardContent>
+              </CardActionArea>
             </Card>
           </Grid>
         ))}
       </Grid>
     </Box>
   );
-};
-
-export default DrillSelection; 
+}; 
