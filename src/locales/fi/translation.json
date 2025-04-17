@@ -1,0 +1,11 @@
+{
+  "appName": "Disc Golf Treeni",
+  "settings": "Asetukset",
+  "languageSettings": "Kieliasetukset",
+  "selectLanguage": "Valitse kieli",
+  
+  "navigation": {
+    "distanceTracker": "Etäisyysmittari",
+    "history": "Historia"
+  }
+} 

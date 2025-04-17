@@ -1,5 +1,7 @@
 # Disc Golf Training PWA
 
+![Disc Golf Training App Demo](docs/IMG_3926.PNG)
+
 A Progressive Web App for disc golf putting practice and training. This application helps disc golfers track their putting sessions, measure distances, and improve their game - all while working offline on the course.
 
 ## Features

@@ -39,6 +39,7 @@ export const DrillSelection: React.FC<DrillSelectionProps> = ({ onDrillSelect })
       <Typography variant="h5" component="h1" gutterBottom>
         Select a Drill
       </Typography>
+      
       <Grid container spacing={2}>
         {drills.map((drill: DrillType) => (
           <Grid

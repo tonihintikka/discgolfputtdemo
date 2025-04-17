@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Route, Routes, Navigate, Link as RouterLink } from 'react-router-dom'
-import { ThemeProvider, CssBaseline, Container, Box, AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
-import StraightenIcon from '@mui/icons-material/Straighten'; // Icon for Distance Meter
-import AdjustIcon from '@mui/icons-material/Adjust'; // Icon for Drills
-import HistoryIcon from '@mui/icons-material/History'; // Icon for History
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk'; // Icon for Pedometer
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
+import { ThemeProvider, CssBaseline, Box } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
-import OfflineIndicator from './components/common/OfflineIndicator'
+
+// Common components
+import AppNavBar from './components/common/AppNavBar'
+import BottomNav from './components/common/BottomNav'
 
 // Drill components
 import { DrillSelection } from './components/drills/DrillSelection'
@@ -23,6 +21,9 @@ import HistoryPage from './pages/HistoryPage'
 
 // Pedometer component
 import PedometerPage from './pages/PedometerPage'
+
+// Settings component
+import SettingsPage from './pages/SettingsPage'
 
 // Create theme
 const theme = createTheme({
@@ -45,46 +46,20 @@ function App() {
       <CssBaseline />
       <Router>
         <Box sx={{ flexGrow: 1, height: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="home"
-                sx={{ mr: 2 }}
-                component={RouterLink} to="/drills"
-              >
-                <AdjustIcon />
-              </IconButton>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Disc Golf Training
-              </Typography>
-              
-              <Button 
-                color="inherit" 
-                component={RouterLink} 
-                to="/distance"
-                startIcon={<DirectionsWalkIcon />}
-                sx={{ mr: 1 }}
-              >
-                Distance Tracker
-              </Button>
-              
-              <Button 
-                color="inherit" 
-                component={RouterLink} 
-                to="/history"
-                startIcon={<HistoryIcon />}
-              >
-                History
-              </Button>
-              
-              <OfflineIndicator />
-            </Toolbar>
-          </AppBar>
+          <AppNavBar />
           
-          <Box sx={{ flexGrow: 1, overflow: 'auto', py: 2 }}>
+          <Box 
+            sx={{ 
+              flexGrow: 1, 
+              overflow: 'auto', 
+              py: 2,
+              pb: { xs: 7, sm: 7 }, // Add bottom padding to account for navigation
+              // Safe area padding for iPhone X and newer
+              '@supports (padding-bottom: env(safe-area-inset-bottom))': {
+                paddingBottom: 'calc(56px + env(safe-area-inset-bottom))'
+              }
+            }}
+          >
             <Routes>
               <Route path="/" element={<Navigate to="/drills" replace />} />
               <Route path="/drills" element={<DrillSelection onDrillSelect={(drill) => console.log('Drill selected:', drill.id)} />} />
@@ -94,8 +69,11 @@ function App() {
               <Route path="/results/:sessionId" element={<DrillSummary />} />
               <Route path="/distance" element={<PedometerPage />} />
               <Route path="/history" element={<HistoryPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </Box>
+          
+          <BottomNav />
         </Box>
       </Router>
     </ThemeProvider>

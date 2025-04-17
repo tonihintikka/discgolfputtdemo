@@ -1,0 +1,11 @@
+{
+  "appName": "Disc Golf Training",
+  "settings": "Settings",
+  "languageSettings": "Language Settings",
+  "selectLanguage": "Select Language",
+  
+  "navigation": {
+    "distanceTracker": "Distance Tracker",
+    "history": "History"
+  }
+} 
