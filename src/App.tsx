@@ -5,11 +5,12 @@ import HomeIcon from '@mui/icons-material/Home'
 import StraightenIcon from '@mui/icons-material/Straighten'; // Icon for Distance Meter
 import AdjustIcon from '@mui/icons-material/Adjust'; // Icon for Drills
 import HistoryIcon from '@mui/icons-material/History'; // Icon for History
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk'; // Icon for Pedometer
 import { createTheme } from '@mui/material/styles'
 import OfflineIndicator from './components/common/OfflineIndicator'
 
 // Drill components
-import DrillSelection from './components/drills/DrillSelection'
+import { DrillSelection } from './components/drills/DrillSelection'
 import DrillInstructions from './components/drills/DrillInstructions'
 import ActiveDrill from './components/drills/ActiveDrill'
 import DrillSummary from './components/drills/DrillSummary'
@@ -19,6 +20,9 @@ import DistanceMeter from './components/distance/DistanceMeter'
 
 // History component
 import HistoryPage from './pages/HistoryPage'
+
+// Pedometer component
+import PedometerPage from './pages/PedometerPage'
 
 // Create theme
 const theme = createTheme({
@@ -61,10 +65,10 @@ function App() {
                 color="inherit" 
                 component={RouterLink} 
                 to="/distance"
-                startIcon={<StraightenIcon />}
+                startIcon={<DirectionsWalkIcon />}
                 sx={{ mr: 1 }}
               >
-                Distance
+                Distance Tracker
               </Button>
               
               <Button 
@@ -83,11 +87,12 @@ function App() {
           <Box sx={{ flexGrow: 1, overflow: 'auto', py: 2 }}>
             <Routes>
               <Route path="/" element={<Navigate to="/drills" replace />} />
-              <Route path="/drills" element={<DrillSelection onSelectDrill={(id) => {}} />} />
+              <Route path="/drills" element={<DrillSelection onDrillSelect={(drill) => console.log('Drill selected:', drill.id)} />} />
+              <Route path="/drills/:drillId" element={<DrillInstructions />} />
               <Route path="/practice/:drillId" element={<DrillInstructions />} />
               <Route path="/practice/:drillId/active" element={<ActiveDrill />} />
               <Route path="/results/:sessionId" element={<DrillSummary />} />
-              <Route path="/distance" element={<DistanceMeter />} />
+              <Route path="/distance" element={<PedometerPage />} />
               <Route path="/history" element={<HistoryPage />} />
             </Routes>
           </Box>

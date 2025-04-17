@@ -18,7 +18,7 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import { DrillSession, DrillType, PuttAttempt } from '../../types/drills';
 import { getDrillType } from '../../services/drillService';
-import { sessionStorage } from '../../services/storage/storageService';
+import { getSession, getSessionAttempts } from '../../services/storage/storageService';
 import DistanceDisplay from '../common/DistanceDisplay';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -44,7 +44,7 @@ const DrillSummary: React.FC = () => {
       
       try {
         // Get session
-        const sessionData = await sessionStorage.getSession(sessionId);
+        const sessionData = await getSession(parseInt(sessionId));
         if (!sessionData) {
           setError('Session not found');
           setLoading(false);
@@ -64,7 +64,7 @@ const DrillSummary: React.FC = () => {
         setDrill(drillType);
         
         // Get attempts
-        const sessionAttempts = await sessionStorage.getSessionAttempts(sessionId);
+        const sessionAttempts = await getSessionAttempts(parseInt(sessionId));
         setAttempts(sessionAttempts);
         
         setLoading(false);
@@ -255,7 +255,7 @@ const DrillSummary: React.FC = () => {
         
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
           <Button 
-            variant="outlined"
+            variant="outlined" 
             onClick={handleBackToDrills}
           >
             Back to Drills
@@ -263,10 +263,9 @@ const DrillSummary: React.FC = () => {
           
           <Button 
             variant="contained" 
-            color="primary"
-            onClick={() => navigate(`/practice/${drill.id}`)}
+            onClick={() => navigate('/drills')}
           >
-            Try Again
+            New Practice Session
           </Button>
         </Box>
       </Paper>

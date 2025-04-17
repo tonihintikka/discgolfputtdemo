@@ -9,7 +9,7 @@ const drillTypes: DrillType[] = [
     name: 'Circle 1X',
     description: 'Practice putt from 3-10 meters (10-33 feet)',
     instructions: 'Take 5 putts from each distance. Focus on consistent form and confident release.',
-    icon: 'adjust', // Material UI icon name
+    icon: 'sports_golf', // Updated to sports_golf icon
     minDistance: 3,
     maxDistance: 10,
     rounds: 20,
@@ -20,7 +20,7 @@ const drillTypes: DrillType[] = [
     name: 'Circle 2',
     description: 'Practice putt from 10-20 meters (33-66 feet)',
     instructions: 'Take 5 putts from each distance. Focus on distance control and arc.',
-    icon: 'gps_fixed', // Material UI icon name
+    icon: 'track_changes', // Updated to track_changes for precision/targeting
     minDistance: 10,
     maxDistance: 20,
     rounds: 15,
@@ -31,7 +31,7 @@ const drillTypes: DrillType[] = [
     name: '5/5 Putts Game',
     description: 'Make 5 consecutive putts to advance to the next station',
     instructions: 'Start at the closest distance. Make 5 consecutive putts to advance to the next distance. Miss a putt and you start over at that distance.',
-    icon: 'looks_5', // Material UI icon name
+    icon: 'filter_5', // Updated to filter_5 to represent the 5/5 concept
     minDistance: 3,
     maxDistance: 12,
     rounds: 5,

@@ -9,21 +9,25 @@ A Progressive Web App for disc golf putting practice and training. This applicat
   - Circle 1X (3-10m) practice
   - Circle 2 (10-20m) practice
   - 5/5 Putts game
-- **Distance Measurement**: Built-in pedometer to measure distances using device motion sensors
+- **Distance Tracker**: Comprehensive solution for measuring distances on the course
+  - Hardware step sensor support (when available)
+  - Accelerometer-based step detection fallback
+  - Calibration for stride length
+  - Step counting and distance calculation
 - **Offline Support**: Full functionality without an internet connection
 - **Responsive Design**: Works on all devices and orientations
 - **Practice History**: View and filter your past putting sessions
-- **Data Management**: Control your locally stored data
+- **Data Management**: Control your locally stored data with statistics and data clearing options
 
 ## Tech Stack
 
-- **Frontend**: React 18+ with TypeScript
-- **UI Framework**: Material UI (MUI) v5
-- **Build Tool**: Vite
+- **Frontend**: React 19+ with TypeScript
+- **UI Framework**: Material UI (MUI) v7
+- **Build Tool**: Vite 6+
 - **PWA Support**: vite-plugin-pwa with Workbox
-- **Routing**: React Router v6
-- **Storage**: IndexedDB with Dexie.js
-- **Motion Detection**: DeviceMotionEvent API
+- **Routing**: React Router v7
+- **Storage**: IndexedDB with Dexie.js 4
+- **Motion Detection**: DeviceMotionEvent API and hardware step sensors
 
 ## Getting Started
 
@@ -76,10 +80,11 @@ disc-golf-pwa/
 ├── public/              # Static assets
 ├── src/
 │   ├── components/      # React components
-│   │   ├── common/      # Reusable UI components (DistanceDisplay, StanceSelector, etc.)
+│   │   ├── common/      # Reusable UI components (DistanceDisplay, StanceSelector, DynamicIcon, etc.)
 │   │   ├── drills/      # Drill-related components (DrillSelection, ActiveDrill, etc.)
 │   │   ├── distance/    # Distance measurement components (DistanceMeter)
 │   │   ├── stats/       # Statistics components (PracticeHistory)
+│   │   ├── pedometer/   # Pedometer-related components (PedometerDisplay, PedometerSettings)
 │   │   └── settings/    # Settings and data management components (DataManagement)
 │   │   
 │   ├── hooks/           # Custom React hooks (useStepDetector)
@@ -91,7 +96,8 @@ disc-golf-pwa/
 │   ├── App.tsx          # Main application with routes
 │   └── main.tsx         # Application entry point
 └── docs/                # Documentation and user stories
-    └── stories/         # User stories for project epics
+    ├── stories/         # User stories for project epics
+    └── technical/       # Technical documentation and examples
 ```
 
 ## Offline Capabilities
@@ -101,12 +107,20 @@ This PWA works offline through:
 - IndexedDB for local data storage
 - Installable on mobile home screens
 
+## Implemented Features
+
+- Advanced Distance Tracker with hardware sensor support 
+- Distance measurement history
+- Data management with statistics and clearing options 
+- Responsive grid layout for drill selection
+- Offline-first architecture with IndexedDB
+
 ## Features in Development
 
-- Distance measurement history view
 - Statistics visualization with charts
 - Backup and export functionality
-- Advanced step detection algorithm
+- User accounts (optional) for cloud sync
+- Social sharing of practice results
 
 ## License
 

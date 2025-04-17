@@ -34,7 +34,24 @@ Story Points: 3
     1.  - [x] Review `useStepDetector` hook logic (threshold, smoothing, calculation).
     2.  - [x] Increase default `threshold` value in `useStepDetector` to reduce sensitivity to noise.
     3.  - [x] Experiment with different `threshold` and `smoothingFactor` values for better accuracy.
-    4.  - [ ] *Future:* Implement peak detection algorithm in `useStepDetector` for more robust step counting.
+    4.  - [ ] Implement peak detection algorithm in `useStepDetector` for more robust step counting.
+10. - [ ] Enhanced Pedometer Implementation:
+    1.  - [ ] Refactor to use hardware `TYPE_STEP_DETECTOR` when available instead of raw accelerometer.
+    2.  - [ ] Implement fallback pipeline for devices without step detection hardware:
+        - [ ] Separate gravity from linear acceleration.
+        - [ ] Apply low-pass filter (α≈0.8 at 50 Hz) to smooth jitter.
+        - [ ] Implement proper thresholding (≈0.15 m/s²) for acceleration magnitude.
+    3.  - [ ] Add stillness detection to prevent drift:
+        - [ ] Implement variance test (σ² < 0.02 (m/s²)² for standing still).
+        - [ ] Pause step counting when device determined to be stationary.
+    4.  - [ ] Add heading tracking with rotation vector sensor for 2D position estimation.
+    5.  - [ ] Implement step length calibration based on user height (0.415 × height).
+    6.  - [ ] Add optional GPS sync to reset drift periodically for outdoor use.
+11. - [ ] Code Refactoring:
+    1.  - [ ] Create separate services for different sensor implementations.
+    2.  - [ ] Add sensor capability detection.
+    3.  - [ ] Implement proper error handling for different device capabilities.
+    4.  - [ ] Add diagnostic UI to show sensor status and quality.
 
 ## Constraints
 

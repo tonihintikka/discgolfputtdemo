@@ -12,9 +12,9 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { useStepDetector } from '../../hooks/useStepDetector';
-import { calculateDistance } from '../../services/pedometer/distanceCalculation';
-import { settingsStorage, measurementStorage } from '../../services/storage/storageService';
-import { StrideCalibration, DistanceMeasurement } from '../../types';
+import { calculateDistance, formatDistance } from '../../services/pedometer/distanceCalculation';
+import { getStorageItem, setStorageItem, storeMeasurement } from '../../services/storage/storageService';
+import { StrideCalibration } from '../../types';
 
 const DEFAULT_USER_ID = 'defaultUser'; // Replace with actual user management later
 const DEFAULT_STRIDE = 0.75; // Default stride length in meters
@@ -29,7 +29,7 @@ const DistanceMeter: React.FC = () => {
   useEffect(() => {
     const loadCalibration = async () => {
       setIsLoading(true);
-      let storedCalibration = await settingsStorage.getCalibration(DEFAULT_USER_ID);
+      let storedCalibration = await getStorageItem<StrideCalibration>('userCalibration');
       
       if (!storedCalibration) {
         // Create default calibration if none exists
@@ -39,7 +39,7 @@ const DistanceMeter: React.FC = () => {
           calibrationDate: new Date(),
           useMetric: true, // Default to metric
         };
-        await settingsStorage.saveCalibration(storedCalibration);
+        await setStorageItem('userCalibration', storedCalibration);
       }
       
       setCalibration(storedCalibration);
@@ -62,27 +62,33 @@ const DistanceMeter: React.FC = () => {
     if (isTracking) {
       // Get current steps and distance *before* stopping
       const finalSteps = steps;
-      const finalDistance = calibration ? calculateDistance(finalSteps, {
-        strideLength: calibration.strideLength,
-        useMetric: useMetric,
-      }) : { meters: 0, feet: 0, formatted: '0 m' };
+      
+      // Calculate distance using our new function format
+      const distanceResult = calibration ? calculateDistance(finalSteps, {
+        calibratedStepLength: calibration.strideLength,
+        useCalibrated: true,
+      }) : { distance: 0, stepLength: 0 };
       
       stopTracking(); // Stop the motion detector
       setIsTracking(false);
       
       // Save the measurement if steps were taken
       if (finalSteps > 0 && calibration) {
-        const measurement: DistanceMeasurement = {
+        const distanceMeters = distanceResult.distance;
+        const distanceFeet = distanceMeters * 3.28084; // Convert to feet
+        
+        const measurement = {
           id: crypto.randomUUID(), // Generate a unique ID
-          timestamp: new Date(),
+          type: 'distance',
+          date: new Date(),
           steps: finalSteps,
-          distanceMeters: finalDistance.meters,
-          distanceFeet: finalDistance.feet,
+          distanceMeters,
+          distanceFeet,
           // location: null, // Add location later if needed
         };
         
         try {
-          await measurementStorage.saveMeasurement(measurement);
+          await storeMeasurement(measurement);
           console.log('Measurement saved:', measurement);
           // Optionally provide user feedback (e.g., Snackbar)
         } catch (error) {
@@ -105,7 +111,7 @@ const DistanceMeter: React.FC = () => {
     if (!isNaN(newStride) && calibration) {
       const updatedCalibration = { ...calibration, strideLength: newStride };
       setCalibration(updatedCalibration);
-      await settingsStorage.saveCalibration(updatedCalibration);
+      await setStorageItem('userCalibration', updatedCalibration);
     }
   }, [calibration]);
   
@@ -116,15 +122,21 @@ const DistanceMeter: React.FC = () => {
     if (calibration) {
       const updatedCalibration = { ...calibration, useMetric: newUseMetric };
       setCalibration(updatedCalibration);
-      await settingsStorage.saveCalibration(updatedCalibration);
+      await setStorageItem('userCalibration', updatedCalibration);
     }
   }, [calibration]);
 
   // Calculate distance
-  const distance = calibration ? calculateDistance(steps, {
-    strideLength: calibration.strideLength,
-    useMetric: useMetric,
-  }) : { meters: 0, feet: 0, formatted: '0 m' };
+  const distanceResult = calibration ? calculateDistance(steps, {
+    calibratedStepLength: calibration.strideLength,
+    useCalibrated: true,
+  }) : { distance: 0, stepLength: 0 };
+
+  // Format distance for display
+  const formattedDistance = formatDistance(distanceResult.distance, useMetric ? 'm' : 'km');
+  const formattedAlternate = useMetric ? 
+    `(${Math.round(distanceResult.distance * 3.28084)} feet)` : 
+    `(${distanceResult.distance} meters)`;
 
   if (isLoading) {
     return (
@@ -191,13 +203,11 @@ const DistanceMeter: React.FC = () => {
         </Box>
         
         <Typography variant="h5" sx={{ my: 2 }}>
-          Distance: {distance.formatted}
+          Distance: {formattedDistance}
         </Typography>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          {useMetric 
-            ? `(${distance.feet} feet)` 
-            : `(${distance.meters} meters)`}
+          {formattedAlternate}
         </Typography>
         
         <Button 

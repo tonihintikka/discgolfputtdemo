@@ -9,6 +9,7 @@ export interface DrillType {
   maxDistance: number; // In meters
   rounds: number;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
+  estimatedTime?: number; // Added optional estimatedTime property
 }
 
 // Drill attempt tracking
