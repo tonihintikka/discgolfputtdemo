@@ -35,7 +35,7 @@ Process Description: AI Agent Demo for a Disc Golf Training App
 
 I conducted an AI agent demo using the Cursor editor. The demo was one and a half hours long, so I prepared in advance. First, I conducted a deep research on disc golf training methods and best practices using the Gemini 2.5 Pro language model from Google. This research was aimed at creating a disc golf training app.
 
-Based on the research, I asked the language model to describe a progressive web app (PWA) for a putting practice game. Then, I used a library in the Cursor editor to generate rules and templates for the project requirement document (PRD) and user stories. The Cursor library ([bmadcode/cursor-custom-agents-rules-generator](https://github.com/bmadcode/cursor-custom-agents-rules-generator)) provided guidance and templates, which I adapted to the project.
+Based on the research, I asked the language model to describe a progressive web app (PWA) for a putting practice game. Then, I used a library in the Cursor editor to generate rules and templates for the project requirement document (PRD) and user stories. The Github library ([bmadcode/cursor-custom-agents-rules-generator](https://github.com/bmadcode/cursor-custom-agents-rules-generator)) provided guidance and templates, which I adapted to the project.
 
 I set up the project foundation using Vite with React and TypeScript and deployed it to Vercel for public access. Within one and a half hours, I created a functional disc golf drill game with three training exercises using Google Material Design.
 
@@ -54,7 +54,7 @@ The entire process, from research to a fully functioning prototype, took approxi
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/discgolfputt.git
+git clone https://github.com/tonihintikka/discgolfputtdemo.git
 cd discgolfputt
 
 # Install dependencies
