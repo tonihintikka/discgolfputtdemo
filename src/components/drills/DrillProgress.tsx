@@ -4,6 +4,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CircleIcon from '@mui/icons-material/Circle';
 import { PuttAttempt } from '../../types/drills';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface DrillProgressProps {
   currentRound: number;
@@ -16,6 +17,8 @@ const DrillProgress: React.FC<DrillProgressProps> = ({
   totalRounds,
   attempts
 }) => {
+  const { t } = useLanguage();
+  
   // Calculate progress percentage
   const progressPercentage = (currentRound / totalRounds) * 100;
   
@@ -50,7 +53,7 @@ const DrillProgress: React.FC<DrillProgressProps> = ({
     <Box sx={{ width: '100%', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-          Progress:
+          {t('common.progress', 'Progress')}:
         </Typography>
         <Box sx={{ width: '100%', mr: 1 }}>
           <LinearProgress 

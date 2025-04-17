@@ -56,6 +56,14 @@
       "incomplete": "Kesken"
     }
   },
+  "stances": {
+    "normal": "Normaali",
+    "straddle": "Haara-asento",
+    "knee": "Polvi",
+    "forehand": "Forehand",
+    "turbo": "Turbo",
+    "throwIn": "Heitto"
+  },
   "common": {
     "save": "Tallenna",
     "cancel": "Peruuta",
@@ -76,6 +84,10 @@
     "made": "Osumia",
     "putts": "puttia",
     "viewResults": "Katso tulokset",
-    "restartDrill": "Aloita uudelleen"
+    "restartDrill": "Aloita uudelleen",
+    "madeIt": "Onnistui",
+    "missed": "Epäonnistui",
+    "stance": "Asento",
+    "progress": "Edistyminen"
   }
 } 

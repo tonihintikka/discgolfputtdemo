@@ -9,6 +9,7 @@ import {
   Chip
 } from '@mui/material';
 import { StanceType } from '../../types/drills';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface StanceSelectorProps {
   value: StanceType;
@@ -19,15 +20,6 @@ interface StanceSelectorProps {
   chipMode?: boolean;
 }
 
-const stanceOptions: { value: StanceType; label: string; }[] = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'straddle', label: 'Straddle' },
-  { value: 'knee', label: 'Knee' },
-  { value: 'forehand', label: 'Forehand' },
-  { value: 'turbo', label: 'Turbo' },
-  { value: 'throw-in', label: 'Throw-in' }
-];
-
 const StanceSelector: React.FC<StanceSelectorProps> = ({
   value,
   onChange,
@@ -36,6 +28,17 @@ const StanceSelector: React.FC<StanceSelectorProps> = ({
   size = 'medium',
   chipMode = false
 }) => {
+  const { t } = useLanguage();
+  
+  const stanceOptions: { value: StanceType; label: string; }[] = [
+    { value: 'normal', label: t('stances.normal', 'Normal') },
+    { value: 'straddle', label: t('stances.straddle', 'Straddle') },
+    { value: 'knee', label: t('stances.knee', 'Knee') },
+    { value: 'forehand', label: t('stances.forehand', 'Forehand') },
+    { value: 'turbo', label: t('stances.turbo', 'Turbo') },
+    { value: 'throw-in', label: t('stances.throwIn', 'Throw-in') }
+  ];
+
   const handleChange = (event: SelectChangeEvent) => {
     onChange(event.target.value as StanceType);
   };
@@ -63,11 +66,11 @@ const StanceSelector: React.FC<StanceSelectorProps> = ({
 
   return (
     <FormControl fullWidth variant={variant} disabled={disabled} size={size}>
-      <InputLabel id="stance-selector-label">Stance</InputLabel>
+      <InputLabel id="stance-selector-label">{t('common.stance', 'Stance')}</InputLabel>
       <Select
         labelId="stance-selector-label"
         value={value}
-        label="Stance"
+        label={t('common.stance', 'Stance')}
         onChange={handleChange}
       >
         {stanceOptions.map(option => (

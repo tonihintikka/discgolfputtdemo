@@ -56,6 +56,14 @@
       "incomplete": "Incomplete"
     }
   },
+  "stances": {
+    "normal": "Normal",
+    "straddle": "Straddle",
+    "knee": "Knee",
+    "forehand": "Forehand",
+    "turbo": "Turbo",
+    "throwIn": "Throw-in"
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
@@ -76,6 +84,10 @@
     "made": "Made",
     "putts": "putts",
     "viewResults": "View Results",
-    "restartDrill": "Restart Drill"
+    "restartDrill": "Restart Drill",
+    "madeIt": "Made It",
+    "missed": "Missed",
+    "stance": "Stance",
+    "progress": "Progress"
   }
 } 

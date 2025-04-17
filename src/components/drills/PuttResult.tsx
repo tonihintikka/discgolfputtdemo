@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Stack } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface PuttResultProps {
   onResult: (result: 'hit' | 'miss') => void;
@@ -12,6 +13,8 @@ const PuttResult: React.FC<PuttResultProps> = ({
   onResult,
   disabled = false
 }) => {
+  const { t } = useLanguage();
+  
   return (
     <Stack
       direction="row"
@@ -34,7 +37,7 @@ const PuttResult: React.FC<PuttResultProps> = ({
           fontWeight: 'bold'
         }}
       >
-        Made It
+        {t('common.madeIt', 'Made It')}
       </Button>
       
       <Button
@@ -52,7 +55,7 @@ const PuttResult: React.FC<PuttResultProps> = ({
           fontWeight: 'bold'
         }}
       >
-        Missed
+        {t('common.missed', 'Missed')}
       </Button>
     </Stack>
   );
