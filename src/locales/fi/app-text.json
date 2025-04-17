@@ -1,10 +1,14 @@
 {
-  "appName": "Disc Golf Treeni",
+  "appName": "Frisbeegolf Treeni",
   "navigation": {
     "drills": "Harjoitukset",
     "distance": "Etäisyys",
     "history": "Historia",
     "settings": "Asetukset"
+  },
+  "labels": {
+    "description": "Kuvaus",
+    "instructions": "Ohjeet"
   },
   "pages": {
     "settings": {
@@ -14,34 +18,34 @@
       "dataManagement": "Tietojen hallinta",
       "about": "Tietoja",
       "darkMode": "Tumma tila",
-      "darkModeDesc": "Käytä tummaa väriteemaa sovelluksessa",
-      "saveStepData": "Tallenna askeleet",
-      "saveStepDataDesc": "Tallenna askelmäärät ja etäisyydet myöhempää tarkastelua varten",
+      "darkModeDesc": "Käytä tummaa värimaailmaa sovelluksessa",
+      "saveStepData": "Tallenna askeltiedot",
+      "saveStepDataDesc": "Tallenna askelten määrä ja etäisyydet myöhempää tarkastelua varten",
       "notifications": "Ilmoitukset",
-      "notificationsDesc": "Ota käyttöön push-ilmoitukset (harjoitusmuistutukset jne.)",
+      "notificationsDesc": "Salli push-ilmoitukset (harjoitusmuistutukset, jne.)",
       "clearDataButton": "Tyhjennä kaikki tiedot",
-      "clearDataDesc": "Tyhjennä kaikki sovelluksen tiedot, mukaan lukien tallennetut harjoitukset, asetukset ja välimuistitiedot. Tätä toimintoa ei voi kumota.",
+      "clearDataDesc": "Tyhjennä kaikki sovelluksen tiedot, mukaan lukien tallennetut harjoitukset, asetukset ja välimuistissa oleva sisältö. Tätä toimintoa ei voi perua.",
       "version": "Versio",
       "madeWith": "Tehty rakkaudella frisbeegolfaajille"
     },
     "drills": {
       "title": "Valitse harjoitus",
-      "circle1": "Rinki 1X",
-      "circle1Desc": "Harjoitusputtit 3-10 metristä (10-33 jalkaa)",
-      "circle1Inst": "Tee 5 puttia jokaiselta etäisyydeltä. Keskity yhtenäiseen muotoon ja varmaan irrotukseen.",
-      "circle2": "Rinki 2",
-      "circle2Desc": "Harjoitusputtit 10-20 metristä (33-66 jalkaa)",
+      "circle1": "Circle 1X",
+      "circle1Desc": "Harjoittele puttaamista 3-10 metrin etäisyydeltä",
+      "circle1Inst": "Tee 5 puttia jokaiselta etäisyydeltä. Keskity tasaiseen tekniikkaan ja varmaan irrotukseen.",
+      "circle2": "Circle 2",
+      "circle2Desc": "Harjoittele puttaamista 10-20 metrin etäisyydeltä",
       "circle2Inst": "Tee 5 puttia jokaiselta etäisyydeltä. Keskity etäisyyden hallintaan ja kaareen.",
       "fivePutts": "5/5 Puttipeli",
-      "fivePuttsDesc": "Tee 5 peräkkäistä puttia edetäksesi seuraavaan asemaan",
-      "fivePuttsInst": "Aloita lähimmältä etäisyydeltä. Tee 5 peräkkäistä puttia edetäksesi seuraavalle etäisyydelle. Jos missaat putin, aloitat uudelleen samalta etäisyydeltä.",
+      "fivePuttsDesc": "Tee 5 peräkkäistä puttia edetäksesi seuraavalle etäisyydelle",
+      "fivePuttsInst": "Aloita lähimmältä etäisyydeltä. Tee 5 peräkkäistä puttia edetäksesi seuraavalle etäisyydelle. Jos hutaat putin, aloitat alusta kyseisellä etäisyydellä.",
       "difficulty": "Vaikeustaso",
       "beginner": "aloittelija",
       "intermediate": "keskitaso",
       "advanced": "edistynyt"
     },
     "distance": {
-      "title": "Etäisyysmittari",
+      "title": "Etäisyyden seuranta",
       "stepCount": "askelta",
       "calibration": "Kalibrointi",
       "startTracking": "Aloita seuranta",
@@ -51,18 +55,18 @@
     },
     "history": {
       "title": "Historia",
-      "noSessions": "Ei harjoituksia vielä.",
-      "completed": "Valmis",
+      "noSessions": "Ei vielä harjoituksia.",
+      "completed": "Suoritettu",
       "incomplete": "Kesken"
     }
   },
   "stances": {
     "normal": "Normaali",
     "straddle": "Haara-asento",
-    "knee": "Polvi",
+    "knee": "Polviputti",
     "forehand": "Forehand",
     "turbo": "Turbo",
-    "throwIn": "Heitto"
+    "throwIn": "Heitto-putit"
   },
   "common": {
     "save": "Tallenna",
@@ -76,17 +80,17 @@
     "distanceRange": "Etäisyysalue",
     "back": "Takaisin harjoituksiin",
     "startDrill": "Aloita harjoitus",
-    "loading": "Ladataan harjoitustietoja...",
+    "loading": "Ladataan harjoituksen tietoja...",
     "round": "Kierros",
     "of": "/",
-    "takeYourPutt": "Tee putti ja merkitse tulos.",
+    "takeYourPutt": "Tee putti ja tallenna tulos.",
     "drillCompleted": "Harjoitus suoritettu!",
-    "made": "Osumia",
-    "putts": "puttia",
-    "viewResults": "Katso tulokset",
-    "restartDrill": "Aloita uudelleen",
-    "madeIt": "Onnistui",
-    "missed": "Epäonnistui",
+    "made": "Onnistuneet",
+    "putts": "putit",
+    "viewResults": "Näytä tulokset",
+    "restartDrill": "Aloita alusta",
+    "madeIt": "Sisään",
+    "missed": "Ohi",
     "stance": "Asento",
     "progress": "Edistyminen"
   }

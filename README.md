@@ -148,6 +148,9 @@ This PWA works offline through:
 - Data management with statistics and clearing options 
 - Responsive grid layout for drill selection
 - Offline-first architecture with IndexedDB
+- Comprehensive putting drill system with multiple practice types
+- Multi-language support with English and Finnish translations
+- Robust storage service with proper TypeScript typing
 
 ## Features in Development
 

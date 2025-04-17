@@ -8,13 +8,47 @@ interface KeyValuePair {
   value: any;
 }
 
+// Define session and attempt types for database storage
+interface SessionRecord {
+  id?: number;
+  drillTypeId: string;
+  startTime: number;
+  endTime?: number;
+  completed: boolean;
+  summary?: {
+    totalAttempts: number;
+    madeAttempts: number;
+    makePercentage: number;
+  };
+}
+
+interface AttemptRecord {
+  id?: number;
+  sessionId: string;
+  round: number;
+  distance: number;
+  stance: string;
+  result: string;
+  timestamp: number;
+  notes?: string;
+}
+
+interface MeasurementRecord {
+  id?: number;
+  type: string;
+  date: number | Date;
+  value: number;
+  unit: string;
+  [key: string]: any;
+}
+
 // Database schema definition
-export class DiscGolfPuttDatabase extends Dexie {
+class DiscGolfPuttDatabase extends Dexie {
   // Tables with proper initialization
   settings!: Dexie.Table<KeyValuePair, string>;
-  sessions!: Dexie.Table<any, number>;
-  attempts!: Dexie.Table<any, number>;
-  measurements!: Dexie.Table<any, number>;
+  sessions!: Dexie.Table<SessionRecord, number>;
+  attempts!: Dexie.Table<AttemptRecord, number>;
+  measurements!: Dexie.Table<MeasurementRecord, number>;
   
   constructor() {
     super('DiscGolfPuttDB');
@@ -83,7 +117,7 @@ export async function removeStorageItem(key: string): Promise<void> {
 export async function getAllSettings(): Promise<Record<string, any>> {
   try {
     const allSettings = await db.settings.toArray();
-    return allSettings.reduce((acc, item) => {
+    return allSettings.reduce((acc: Record<string, any>, item: KeyValuePair) => {
       acc[item.key] = item.value;
       return acc;
     }, {} as Record<string, any>);
@@ -98,7 +132,7 @@ export async function getAllSettings(): Promise<Record<string, any>> {
  * @param session The session data to store
  * @returns The ID of the stored session
  */
-export async function storeSession(session: any): Promise<number> {
+export async function storeSession(session: SessionRecord): Promise<number> {
   try {
     return await db.sessions.add(session);
   } catch (error) {
@@ -112,7 +146,7 @@ export async function storeSession(session: any): Promise<number> {
  * @param id The session ID
  * @param sessionData The updated session data
  */
-export async function updateSession(id: number, sessionData: Partial<any>): Promise<void> {
+export async function updateSession(id: number, sessionData: Partial<SessionRecord>): Promise<void> {
   try {
     await db.sessions.update(id, sessionData);
   } catch (error) {
@@ -125,7 +159,7 @@ export async function updateSession(id: number, sessionData: Partial<any>): Prom
  * Get a drill session by ID
  * @param id The session ID
  */
-export async function getSession(id: number): Promise<any | undefined> {
+export async function getSession(id: number): Promise<SessionRecord | undefined> {
   try {
     return await db.sessions.get(id);
   } catch (error) {
@@ -138,7 +172,7 @@ export async function getSession(id: number): Promise<any | undefined> {
  * Get all sessions, optionally filtered
  * @param filters Optional filters to apply
  */
-export async function getSessions(filters?: Partial<any>): Promise<any[]> {
+export async function getSessions(filters?: Partial<SessionRecord>): Promise<SessionRecord[]> {
   try {
     if (!filters) {
       return await db.sessions.toArray();
@@ -147,9 +181,9 @@ export async function getSessions(filters?: Partial<any>): Promise<any[]> {
     // Apply filters - this is a simple implementation
     // For more complex filtering, consider using Dexie's collection methods
     return await db.sessions
-      .filter(session => {
+      .filter((session: SessionRecord) => {
         for (const [key, value] of Object.entries(filters)) {
-          if (session[key] !== value) {
+          if (session[key as keyof SessionRecord] !== value) {
             return false;
           }
         }
@@ -166,7 +200,7 @@ export async function getSessions(filters?: Partial<any>): Promise<any[]> {
  * Store an attempt
  * @param attempt The attempt data to store
  */
-export async function storeAttempt(attempt: any): Promise<number> {
+export async function storeAttempt(attempt: AttemptRecord): Promise<number> {
   try {
     return await db.attempts.add(attempt);
   } catch (error) {
@@ -179,7 +213,7 @@ export async function storeAttempt(attempt: any): Promise<number> {
  * Get all attempts for a session
  * @param sessionId The session ID
  */
-export async function getSessionAttempts(sessionId: number): Promise<any[]> {
+export async function getSessionAttempts(sessionId: number): Promise<AttemptRecord[]> {
   try {
     return await db.attempts
       .where('sessionId')
@@ -195,7 +229,7 @@ export async function getSessionAttempts(sessionId: number): Promise<any[]> {
  * Store a measurement (like step count, distance)
  * @param measurement The measurement data to store
  */
-export async function storeMeasurement(measurement: any): Promise<number> {
+export async function storeMeasurement(measurement: MeasurementRecord): Promise<number> {
   try {
     return await db.measurements.add(measurement);
   } catch (error) {
@@ -214,7 +248,7 @@ export async function getMeasurements(
   type: string,
   startDate?: Date,
   endDate?: Date
-): Promise<any[]> {
+): Promise<MeasurementRecord[]> {
   try {
     let collection = db.measurements.where('type').equals(type);
     
@@ -223,10 +257,13 @@ export async function getMeasurements(
       const startTimestamp = startDate.getTime();
       const endTimestamp = endDate.getTime();
       
-      collection = collection.filter(m => {
-        const timestamp = m.date.getTime ? m.date.getTime() : m.date;
-        return timestamp >= startTimestamp && timestamp <= endTimestamp;
-      });
+      // Use Dexie's collection methods for filtering
+      return await collection
+        .toArray()
+        .then(measurements => measurements.filter((m: MeasurementRecord) => {
+          const timestamp = typeof m.date === 'object' && m.date.getTime ? m.date.getTime() : (m.date as number);
+          return timestamp >= startTimestamp && timestamp <= endTimestamp;
+        }));
     }
     
     return await collection.toArray();
@@ -254,13 +291,12 @@ export const sessionStorage = {
   getSession: async (id: string | number): Promise<DrillSession | undefined> => {
     // Handle if id is a string (for backward compatibility)
     const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
-    return getSession(numericId);
+    return getSession(numericId) as Promise<DrillSession | undefined>;
   },
   saveSession: async (session: DrillSession): Promise<void> => {
     if (typeof session.id === 'string') {
       // Convert existing string id sessions to the new format
-      const newSession = {
-        ...session,
+      const newSession: SessionRecord = {
         drillTypeId: session.drillTypeId,
         startTime: session.startTime,
         endTime: session.endTime,
@@ -271,26 +307,53 @@ export const sessionStorage = {
     } else {
       // Update existing numeric id session
       if (typeof session.id === 'number') {
-        await updateSession(session.id, session);
+        await updateSession(session.id, session as unknown as SessionRecord);
       } else {
         // New session without id
-        await storeSession(session);
+        await storeSession(session as unknown as SessionRecord);
       }
     }
   },
   saveAttempt: async (attempt: PuttAttempt): Promise<void> => {
     // Convert drillId to sessionId if needed
-    const adaptedAttempt = {
-      ...attempt,
-      sessionId: attempt.drillId
+    const adaptedAttempt: AttemptRecord = {
+      sessionId: attempt.drillId,
+      round: attempt.round,
+      distance: attempt.distance,
+      stance: attempt.stance,
+      result: attempt.result,
+      timestamp: attempt.timestamp,
+      notes: attempt.notes
     };
     await storeAttempt(adaptedAttempt);
   },
-  getSessions: getSessions,
+  getSessions,
   getSessionAttempts: async (sessionId: string | number): Promise<PuttAttempt[]> => {
     // Handle if sessionId is a string (for backward compatibility)
     const numericId = typeof sessionId === 'string' ? parseInt(sessionId, 10) : sessionId;
-    return getSessionAttempts(numericId);
+    const attempts = await getSessionAttempts(numericId);
+    return attempts as unknown as PuttAttempt[];
+  },
+  getStartedDrillSessions: async (): Promise<DrillSession[]> => {
+    // Get all sessions that have not been completed
+    const sessions = await getSessions({ completed: false });
+    return sessions as unknown as DrillSession[];
+  },
+  stopCurrentSession: async (sessionId: string | number): Promise<void> => {
+    // Get the session
+    const session = await sessionStorage.getSession(sessionId);
+    if (!session) {
+      throw new Error(`Session with id ${sessionId} not found`);
+    }
+    
+    // Mark it as completed with the current time
+    const updatedSession = {
+      ...session,
+      completed: true,
+      endTime: Date.now()
+    };
+    
+    await sessionStorage.saveSession(updatedSession);
   },
   clearSessions: async (): Promise<void> => {
     try {
@@ -305,9 +368,9 @@ export const sessionStorage = {
 
 export const measurementStorage = {
   saveMeasurement: async (measurement: DistanceMeasurement): Promise<void> => {
-    await storeMeasurement(measurement);
+    await storeMeasurement(measurement as unknown as MeasurementRecord);
   },
-  getMeasurements: getMeasurements,
+  getMeasurements,
   clearMeasurements: async (): Promise<void> => {
     try {
       await db.measurements.clear();

@@ -3,7 +3,7 @@ export interface DrillType {
   id: string;
   name: string;
   description: string;
-  instructions: string;
+  instructions: string | string[];
   icon: string;
   minDistance: number; // In meters
   maxDistance: number; // In meters

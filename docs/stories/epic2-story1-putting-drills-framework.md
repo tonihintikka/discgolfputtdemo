@@ -8,7 +8,7 @@ Putting Drills Framework
 
 ## Status
 
-Draft
+Completed
 
 ## Context
 
@@ -43,13 +43,13 @@ Story Points: 3
 
 4. - [x] Build "5/5 Putts" Game
    1. - [x] Create station-based sequence logic
-   2. - [ ] Implement consecutive makes tracking
-   3. - [ ] Build completion criteria and assessment
+   2. - [x] Implement consecutive makes tracking
+   3. - [x] Build completion criteria and assessment
 
 5. - [x] Create Drill Results Display
    1. - [x] Design summary view for completed drills
    2. - [x] Implement visualization of make/miss by distance
-   3. - [ ] Create sharable results format
+   3. - [x] Create sharable results format
 
 ## Constraints
 

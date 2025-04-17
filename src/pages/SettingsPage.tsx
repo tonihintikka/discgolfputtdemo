@@ -16,8 +16,12 @@ import {
 } from '@mui/material';
 import LanguageSwitcher from '../components/settings/LanguageSwitcher';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useLanguage } from '../context/LanguageContext';
 
 const SettingsPage: React.FC = () => {
+  // Use language context
+  const { t, changeLanguage } = useLanguage();
+  
   // State for various settings
   const [darkMode, setDarkMode] = useState(false);
   const [saveSteps, setSaveSteps] = useState(true);
@@ -27,6 +31,7 @@ const SettingsPage: React.FC = () => {
   
   // Handle language change
   const handleLanguageChange = (language: string) => {
+    changeLanguage(language);
     setSnackbarMessage(`Language changed to ${language === 'en' ? 'English' : 'Finnish'}`);
     setSnackbarOpen(true);
   };
@@ -34,7 +39,7 @@ const SettingsPage: React.FC = () => {
   // Handle data clearing
   const handleClearData = () => {
     // In a real implementation, we would clear localStorage or IndexedDB data
-    setSnackbarMessage('All app data has been cleared');
+    setSnackbarMessage(t('pages.settings.clearDataButton', 'All app data has been cleared'));
     setSnackbarOpen(true);
   };
   
@@ -46,13 +51,13 @@ const SettingsPage: React.FC = () => {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Settings
+        {t('pages.settings.title', 'Settings')}
       </Typography>
       
       {/* Language Settings */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Language Settings
+          {t('pages.settings.languageSettings', 'Language Settings')}
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <LanguageSwitcher onLanguageChange={handleLanguageChange} />
@@ -61,14 +66,14 @@ const SettingsPage: React.FC = () => {
       {/* App Preferences */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          App Preferences
+          {t('pages.settings.appPreferences', 'App Preferences')}
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <List disablePadding>
           <ListItem>
             <ListItemText 
-              primary="Dark Mode" 
-              secondary="Use dark color scheme throughout the app"
+              primary={t('pages.settings.darkMode', 'Dark Mode')}
+              secondary={t('pages.settings.darkModeDesc', 'Use dark color scheme throughout the app')}
             />
             <ListItemSecondaryAction>
               <Switch
@@ -81,8 +86,8 @@ const SettingsPage: React.FC = () => {
           
           <ListItem>
             <ListItemText 
-              primary="Save Step Data" 
-              secondary="Store step counts and distances for later review"
+              primary={t('pages.settings.saveStepData', 'Save Step Data')}
+              secondary={t('pages.settings.saveStepDataDesc', 'Store step counts and distances for later review')}
             />
             <ListItemSecondaryAction>
               <Switch
@@ -95,8 +100,8 @@ const SettingsPage: React.FC = () => {
           
           <ListItem>
             <ListItemText 
-              primary="Notifications" 
-              secondary="Enable push notifications (practice reminders, etc.)"
+              primary={t('pages.settings.notifications', 'Notifications')}
+              secondary={t('pages.settings.notificationsDesc', 'Enable push notifications (practice reminders, etc.)')}
             />
             <ListItemSecondaryAction>
               <Switch
@@ -112,12 +117,11 @@ const SettingsPage: React.FC = () => {
       {/* Data Management */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Data Management
+          {t('pages.settings.dataManagement', 'Data Management')}
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <Typography variant="body2" paragraph>
-          Clear all application data including saved sessions, settings, and cached content.
-          This action cannot be undone.
+          {t('pages.settings.clearDataDesc', 'Clear all application data including saved sessions, settings, and cached content. This action cannot be undone.')}
         </Typography>
         
         <Button 
@@ -126,24 +130,24 @@ const SettingsPage: React.FC = () => {
           startIcon={<DeleteIcon />}
           onClick={handleClearData}
         >
-          Clear All Data
+          {t('pages.settings.clearDataButton', 'Clear All Data')}
         </Button>
       </Paper>
       
       {/* About Section */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          About
+          {t('pages.settings.about', 'About')}
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <Typography variant="body2" paragraph>
-          Disc Golf Training PWA
+          {t('appName', 'Disc Golf Training PWA')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Version 1.0.0
+          {t('pages.settings.version', 'Version')} 1.0.0
         </Typography>
         <Typography variant="caption" display="block" sx={{ mt: 2 }}>
-          Made with ❤️ for disc golfers
+          {t('pages.settings.madeWith', 'Made with ❤️ for disc golfers')}
         </Typography>
       </Paper>
       

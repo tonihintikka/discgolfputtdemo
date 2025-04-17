@@ -2,6 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { DrillType, DrillRound, DrillSession, PuttAttempt, StanceType, DrillConfig } from '../types/drills';
 import { sessionStorage } from './storage/storageService';
 
+// Extended drill type with actual rounds array for display
+interface DrillWithRounds extends Omit<DrillType, 'rounds'> {
+  rounds: DrillRound[];
+}
+
 // Predefined drill types
 const drillTypes: DrillType[] = [
   {
@@ -199,6 +204,34 @@ export const getDrillTypes = (): DrillType[] => {
 // Get a specific drill type
 export const getDrillType = (id: string): DrillType | undefined => {
   return drillTypes.find(drill => drill.id === id);
+};
+
+// Get a specific drill with its rounds and details
+export const getDrillById = async (id: string): Promise<DrillWithRounds | null> => {
+  const drillType = getDrillType(id);
+  if (!drillType) return null;
+  
+  // Generate the rounds for this drill
+  const roundsArray = getDrillRounds(id);
+  
+  // Return a complete drill object with rounds
+  return {
+    ...drillType,
+    rounds: roundsArray
+  };
+};
+
+// Start a new drill session
+export const startDrillSession = async (drillId: string): Promise<string> => {
+  const session = createDrillSession(drillId);
+  
+  try {
+    await sessionStorage.saveSession(session);
+    return session.id;
+  } catch (error) {
+    console.error('Failed to save session', error);
+    throw new Error('Failed to start drill session');
+  }
 };
 
 // Get rounds for a specific drill

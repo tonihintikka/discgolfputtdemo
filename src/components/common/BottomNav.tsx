@@ -10,10 +10,12 @@ import AdjustIcon from '@mui/icons-material/Adjust'; // Icon for Drills
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk'; // Icon for Distance
 import HistoryIcon from '@mui/icons-material/History'; // Icon for History
 import SettingsIcon from '@mui/icons-material/Settings'; // Icon for Settings
+import { useLanguage } from '../../context/LanguageContext';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
   
   // Get the current route path to set the active tab
   const getCurrentValue = () => {
@@ -65,19 +67,19 @@ const BottomNav: React.FC = () => {
           showLabels
         >
           <BottomNavigationAction 
-            label="Drills" 
+            label={t('navigation.drills', 'Drills')} 
             icon={<AdjustIcon />} 
           />
           <BottomNavigationAction 
-            label="Distance" 
+            label={t('navigation.distance', 'Distance')} 
             icon={<DirectionsWalkIcon />} 
           />
           <BottomNavigationAction 
-            label="History" 
+            label={t('navigation.history', 'History')} 
             icon={<HistoryIcon />} 
           />
           <BottomNavigationAction 
-            label="Settings" 
+            label={t('navigation.settings', 'Settings')} 
             icon={<SettingsIcon />} 
           />
         </BottomNavigation>
