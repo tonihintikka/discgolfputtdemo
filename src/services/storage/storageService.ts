@@ -337,7 +337,28 @@ export const sessionStorage = {
   getStartedDrillSessions: async (): Promise<DrillSession[]> => {
     // Get all sessions that have not been completed
     const sessions = await getSessions({ completed: false });
-    return sessions as unknown as DrillSession[];
+    
+    // Create an array of session objects with empty attempts arrays
+    const drillSessions = sessions.map(session => ({
+      ...session,
+      attempts: [] as PuttAttempt[]
+    }));
+    
+    // For each session, try to fetch its attempts
+    for (const session of drillSessions) {
+      try {
+        const sessionId = session.id;
+        if (sessionId) {
+          const attempts = await getSessionAttempts(sessionId);
+          session.attempts = attempts as unknown as PuttAttempt[];
+        }
+      } catch (error) {
+        console.error(`Error fetching attempts for session ${session.id}:`, error);
+        // Keep the empty attempts array if there's an error
+      }
+    }
+    
+    return drillSessions as unknown as DrillSession[];
   },
   stopCurrentSession: async (sessionId: string | number): Promise<void> => {
     // Get the session

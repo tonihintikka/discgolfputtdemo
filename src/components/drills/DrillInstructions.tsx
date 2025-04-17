@@ -187,7 +187,7 @@ const DrillInstructions: React.FC = () => {
                       <ListItem key={session.id}>
                         <ListItemText
                           primary={formatDate(new Date(session.startTime))}
-                          secondary={`${t('pages.drills.progress', 'Progress')}: ${session.attempts.length || 0} ${t('common.putts', 'putts')}`}
+                          secondary={`${t('pages.drills.progress', 'Progress')}: ${session.attempts?.length || 0} ${t('common.putts', 'putts')}`}
                         />
                         <Box>
                           <Button 
