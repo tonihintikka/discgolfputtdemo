@@ -63,6 +63,36 @@ Story Points: 4
 - Ensure the chosen method for loading translation files (bundling vs. dynamic loading) works reliably with the PWA's offline caching strategy via the service worker. Dynamic loading might require specific cache configurations.
 - Maintain clear and consistent keys across translation files.
 
+## Mobile UI Best Practices
+
+For our mobile application with multi-language support, we follow these best practices:
+
+1. **Bottom Navigation**
+   - Implemented at the bottom of the screen for easy thumb access
+   - Includes iOS safe area support via `env(safe-area-inset-bottom)` padding
+   - Uses Material UI's `BottomNavigation` component for consistent UX
+   - Icons and labels that clearly communicate functionality without language ambiguity
+
+2. **Language-Specific Considerations**
+   - Account for text expansion/contraction between languages (Finnish words can be longer)
+   - Ensure all UI containers can accommodate text of varying lengths
+   - Use flexible layouts that adapt to different text sizes
+   - Test UI in all supported languages to identify potential overflow issues
+
+3. **Viewport Configuration**
+   - Added `viewport-fit=cover` to the viewport meta tag to ensure proper rendering on notched devices
+   - Implemented proper padding and safe areas to avoid content being hidden by device UI elements
+
+4. **Device Adaptation**
+   - Consistent experience across iOS and Android 
+   - Support for both portrait and landscape orientations
+   - Responsive design that adapts to different screen sizes and device capabilities
+
+5. **Accessibility**
+   - All interactive elements sized appropriately (minimum 44×44 pixels)
+   - Adequate color contrast that works across language contexts
+   - Clear visual feedback for interactive elements
+
 ## Data Models / Schema
 
 - **Translation File Structure (Example):**

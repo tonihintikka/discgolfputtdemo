@@ -31,6 +31,24 @@ A Progressive Web App for disc golf putting practice and training. This applicat
 - **Storage**: IndexedDB with Dexie.js 4
 - **Motion Detection**: DeviceMotionEvent API and hardware step sensors
 
+## Mobile UI Best Practices
+
+This app follows modern mobile UI best practices to ensure a great user experience on all devices:
+
+- **Bottom Navigation**: A bottom navigation bar provides easy thumb access to all main app features, following the Material Design guidelines and aligning with how users naturally hold their mobile devices.
+
+- **iOS Safe Area Support**: The app supports iOS safe areas with the viewport meta tag `viewport-fit=cover` and CSS `env(safe-area-inset-bottom)` to ensure proper display on notched iPhones and devices with home indicators.
+
+- **Thumb-Friendly Design**: Key UI elements are placed within easy thumb reach zones to enhance one-handed usability.
+
+- **Adaptive Layout**: The UI adapts to different screen sizes and orientations, ensuring a consistent experience across devices.
+
+- **Responsive Touch Targets**: All interactive elements are sized appropriately (minimum 44x44 pixels) to prevent mis-taps and ensure accessibility.
+
+- **Consistent Navigation**: The app maintains consistent navigation patterns throughout to reduce cognitive load and improve usability.
+
+- **Offline Indicators**: Visual feedback informs users when the app is operating offline, enhancing transparency about the app's state.
+
 ## Development Process
 
 Process Description: AI Agent Demo for a Disc Golf Training App
