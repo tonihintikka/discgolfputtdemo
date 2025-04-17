@@ -8,7 +8,8 @@ import {
   Typography, 
   Chip,
   useTheme,
-  Grid
+  Grid,
+  Container
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getDrillTypes } from '../../services/drillService';
@@ -61,91 +62,93 @@ export const DrillSelection: React.FC<DrillSelectionProps> = ({ onDrillSelect })
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 2 }}>
-      <Typography variant="h5" component="h1" gutterBottom>
-        {t('pages.drills.title', 'Select a Drill')}
-      </Typography>
-      
-      <Grid container spacing={2}>
-        {drills.map((drill: DrillType) => {
-          const { name, description } = getDrillTranslation(drill);
-          
-          return (
-            <Grid 
-              key={drill.id}
-              size={{ xs: 12, sm: 6, md: 4 }}
-            >
-              <Card 
-                elevation={3}
-                sx={{ 
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6,
-                  }
-                }}
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="h5" component="h1" gutterBottom>
+          {t('pages.drills.title', 'Select a Drill')}
+        </Typography>
+        
+        <Grid container spacing={2}>
+          {drills.map((drill: DrillType) => {
+            const { name, description } = getDrillTranslation(drill);
+            
+            return (
+              <Grid 
+                key={drill.id}
+                size={{ xs: 12, sm: 6, md: 4 }}
               >
-                <CardActionArea 
-                  onClick={() => handleDrillSelection(drill)}
+                <Card 
+                  elevation={3}
                   sx={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'flex-start',
                     height: '100%',
-                    p: 1
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 6,
+                    }
                   }}
                 >
-                  <CardContent sx={{ width: '100%', p: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
-                        sx={{ 
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderRadius: '50%',
-                          bgcolor: theme.palette.primary.main,
-                          color: 'white',
-                          p: 1,
-                          mr: 2,
-                          width: 40,
-                          height: 40
-                        }}
-                      >
-                        <DynamicIcon iconName={drill.icon} />
+                  <CardActionArea 
+                    onClick={() => handleDrillSelection(drill)}
+                    sx={{ 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'flex-start',
+                      height: '100%',
+                      p: 1
+                    }}
+                  >
+                    <CardContent sx={{ width: '100%', p: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Box 
+                          sx={{ 
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            bgcolor: theme.palette.primary.main,
+                            color: 'white',
+                            p: 1,
+                            mr: 2,
+                            width: 40,
+                            height: 40
+                          }}
+                        >
+                          <DynamicIcon iconName={drill.icon} />
+                        </Box>
+                        <Typography variant="h6" component="h2">
+                          {name}
+                        </Typography>
                       </Box>
-                      <Typography variant="h6" component="h2">
-                        {name}
+                      
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {description}
                       </Typography>
-                    </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {description}
-                    </Typography>
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
-                      <Chip 
-                        label={`${t('pages.drills.difficulty', 'Difficulty')}: ${t(`pages.drills.${drill.difficulty}`, drill.difficulty)}`}
-                        size="small"
-                        sx={{ 
-                          bgcolor: getDifficultyColor(drill.difficulty),
-                          color: 'white',
-                          fontWeight: 'bold'
-                        }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        {drill.estimatedTime ? `${drill.estimatedTime} min` : 'N/A'}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </Box>
+                      
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
+                        <Chip 
+                          label={`${t('pages.drills.difficulty', 'Difficulty')}: ${t(`pages.drills.${drill.difficulty}`, drill.difficulty)}`}
+                          size="small"
+                          sx={{ 
+                            bgcolor: getDifficultyColor(drill.difficulty),
+                            color: 'white',
+                            fontWeight: 'bold'
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          {drill.estimatedTime ? `${drill.estimatedTime} min` : 'N/A'}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Box>
+    </Container>
   );
 }; 

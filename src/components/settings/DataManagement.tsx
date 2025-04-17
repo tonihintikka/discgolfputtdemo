@@ -21,6 +21,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import StorageIcon from '@mui/icons-material/Storage';
 import { dataManagement, sessionStorage, measurementStorage } from '../../services/storage/storageService';
+import { useLanguage } from '../../context/LanguageContext';
 
 type DataStats = {
   settings: number;
@@ -37,6 +38,7 @@ const DataManagement: React.FC = () => {
   const [dialogAction, setDialogAction] = useState<'all' | 'sessions' | 'measurements'>('all');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const { t } = useLanguage();
 
   const loadStats = async () => {
     setLoading(true);
@@ -64,27 +66,33 @@ const DataManagement: React.FC = () => {
     setLoading(true);
 
     try {
+      let messageKey = '';
+      let defaultMessage = '';
       switch (dialogAction) {
         case 'all':
           await dataManagement.clearAllData();
-          setSnackbarMessage('All data cleared successfully');
+          messageKey = 'dataManagement.clearAllSuccess';
+          defaultMessage = 'All data cleared successfully';
           break;
         case 'sessions':
           await sessionStorage.clearSessions();
-          setSnackbarMessage('Practice sessions cleared successfully');
+          messageKey = 'dataManagement.clearSessionsSuccess';
+          defaultMessage = 'Practice sessions cleared successfully';
           break;
         case 'measurements':
           await measurementStorage.clearMeasurements();
-          setSnackbarMessage('Distance measurements cleared successfully');
+          messageKey = 'dataManagement.clearMeasurementsSuccess';
+          defaultMessage = 'Distance measurements cleared successfully';
           break;
       }
+      setSnackbarMessage(t(messageKey, defaultMessage));
       
       // Reload stats after clearing
       await loadStats();
       setSnackbarOpen(true);
     } catch (error) {
       console.error('Error clearing data:', error);
-      setSnackbarMessage('Error clearing data');
+      setSnackbarMessage(t('dataManagement.clearError', 'Error clearing data'));
       setSnackbarOpen(true);
     } finally {
       setLoading(false);
@@ -102,11 +110,11 @@ const DataManagement: React.FC = () => {
   const getDialogText = () => {
     switch (dialogAction) {
       case 'all':
-        return 'This will permanently delete ALL your data including practice sessions, distance measurements, and settings.';
+        return t('dataManagement.confirmClearAll', 'This will permanently delete ALL your data including practice sessions, distance measurements, and settings.');
       case 'sessions':
-        return 'This will permanently delete all your practice sessions and attempts.';
+        return t('dataManagement.confirmClearSessions', 'This will permanently delete all your practice sessions and attempts.');
       case 'measurements':
-        return 'This will permanently delete all your distance measurements.';
+        return t('dataManagement.confirmClearMeasurements', 'This will permanently delete all your distance measurements.');
       default:
         return '';
     }
@@ -124,18 +132,18 @@ const DataManagement: React.FC = () => {
     <Paper sx={{ p: 3, mb: 3 }}>
       <Typography variant="h5" gutterBottom>
         <StorageIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-        Data Management
+        {t('dataManagement.title', 'Data Management')}
       </Typography>
 
       <Divider sx={{ my: 2 }} />
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        <AlertTitle>Local Storage Only</AlertTitle>
-        All data is stored locally on your device. No data is sent to any server.
+        <AlertTitle>{t('dataManagement.localStorageTitle', 'Local Storage Only')}</AlertTitle>
+        {t('dataManagement.localStorageDesc', 'All data is stored locally on your device. No data is sent to any server.')}
       </Alert>
 
       <Typography variant="h6" gutterBottom>
-        Storage Statistics
+        {t('dataManagement.statsTitle', 'Storage Statistics')}
       </Typography>
 
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
@@ -143,7 +151,7 @@ const DataManagement: React.FC = () => {
           <Card variant="outlined">
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
-                Practice Sessions
+                {t('dataManagement.statsSessions', 'Practice Sessions')}
               </Typography>
               <Typography variant="h5">{stats?.sessions || 0}</Typography>
             </CardContent>
@@ -153,7 +161,7 @@ const DataManagement: React.FC = () => {
           <Card variant="outlined">
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
-                Putt Attempts
+                {t('dataManagement.statsAttempts', 'Putt Attempts')}
               </Typography>
               <Typography variant="h5">{stats?.attempts || 0}</Typography>
             </CardContent>
@@ -163,7 +171,7 @@ const DataManagement: React.FC = () => {
           <Card variant="outlined">
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
-                Measurements
+                {t('dataManagement.statsMeasurements', 'Measurements')}
               </Typography>
               <Typography variant="h5">{stats?.measurements || 0}</Typography>
             </CardContent>
@@ -173,7 +181,7 @@ const DataManagement: React.FC = () => {
           <Card variant="outlined">
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
-                Total Items
+                {t('dataManagement.statsTotal', 'Total Items')}
               </Typography>
               <Typography variant="h5">{stats?.total || 0}</Typography>
             </CardContent>
@@ -182,7 +190,7 @@ const DataManagement: React.FC = () => {
       </Box>
 
       <Typography variant="h6" gutterBottom>
-        Clear Data
+        {t('dataManagement.clearDataTitle', 'Clear Data')}
       </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -193,7 +201,7 @@ const DataManagement: React.FC = () => {
           onClick={() => handleClearData('sessions')}
           disabled={loading || (stats?.sessions === 0 && stats?.attempts === 0)}
         >
-          Clear Practice Sessions
+          {t('dataManagement.clearSessionsButton', 'Clear Practice Sessions')}
         </Button>
         
         <Button
@@ -203,7 +211,7 @@ const DataManagement: React.FC = () => {
           onClick={() => handleClearData('measurements')}
           disabled={loading || stats?.measurements === 0}
         >
-          Clear Distance Measurements
+          {t('dataManagement.clearMeasurementsButton', 'Clear Distance Measurements')}
         </Button>
         
         <Button
@@ -213,7 +221,7 @@ const DataManagement: React.FC = () => {
           onClick={() => handleClearData('all')}
           disabled={loading || stats?.total === 0}
         >
-          Clear All Data
+          {t('dataManagement.clearAllButton', 'Clear All Data')}
         </Button>
       </Box>
 
@@ -223,21 +231,21 @@ const DataManagement: React.FC = () => {
         onClose={handleCloseDialog}
       >
         <DialogTitle>
-          {"Confirm Data Deletion"}
+          {t('dataManagement.confirmDialogTitle', 'Confirm Data Deletion')}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {getDialogText()}
             <br /><br />
-            <strong>This action cannot be undone.</strong>
+            <strong>{t('dataManagement.confirmWarning', 'This action cannot be undone.')}</strong>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} autoFocus>
-            Cancel
+            {t('common.cancel', 'Cancel')}
           </Button>
           <Button onClick={handleConfirmClear} color="error">
-            Confirm Delete
+            {t('dataManagement.confirmDeleteButton', 'Confirm Delete')}
           </Button>
         </DialogActions>
       </Dialog>

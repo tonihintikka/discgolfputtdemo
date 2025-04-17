@@ -15,6 +15,7 @@ import { useStepDetector } from '../../hooks/useStepDetector';
 import { calculateDistance, formatDistance } from '../../services/pedometer/distanceCalculation';
 import { getStorageItem, setStorageItem, storeMeasurement } from '../../services/storage/storageService';
 import { StrideCalibration } from '../../types';
+import { useLanguage } from '../../context/LanguageContext'; // Import useLanguage
 
 const DEFAULT_USER_ID = 'defaultUser'; // Replace with actual user management later
 const DEFAULT_STRIDE = 0.75; // Default stride length in meters
@@ -24,6 +25,7 @@ const DistanceMeter: React.FC = () => {
   const [calibration, setCalibration] = useState<StrideCalibration | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [useMetric, setUseMetric] = useState(true);
+  const { t } = useLanguage(); // Get translation function
   
   // Fetch calibration data on load
   useEffect(() => {
@@ -78,11 +80,13 @@ const DistanceMeter: React.FC = () => {
         const distanceFeet = distanceMeters * 3.28084; // Convert to feet
         
         const measurement = {
-          id: crypto.randomUUID(), // Generate a unique ID
+          // id: crypto.randomUUID(), // Let Dexie handle the ID generation
           type: 'distance',
           date: new Date(),
           steps: finalSteps,
-          distanceMeters,
+          value: useMetric ? distanceMeters : distanceFeet, // Store primary distance value
+          unit: useMetric ? 'm' : 'ft', // Store primary unit
+          distanceMeters, // Keep original values too
           distanceFeet,
           // location: null, // Add location later if needed
         };
@@ -133,15 +137,17 @@ const DistanceMeter: React.FC = () => {
   }) : { distance: 0, stepLength: 0 };
 
   // Format distance for display
-  const formattedDistance = formatDistance(distanceResult.distance, useMetric ? 'm' : 'km');
+  const displayUnit = useMetric ? 'm' : 'ft'; 
+  const formattedDistance = formatDistance(distanceResult.distance, 'm'); // Always use meters for this formatter potentially
   const formattedAlternate = useMetric ? 
-    `(${Math.round(distanceResult.distance * 3.28084)} feet)` : 
-    `(${distanceResult.distance} meters)`;
+    `(${Math.round(distanceResult.distance * 3.28084)} ${t('units.feet', 'feet')})` : 
+    `(${distanceResult.distance.toFixed(1)} ${t('units.meters', 'meters')})`;
 
   if (isLoading) {
     return (
-      <Container maxWidth="sm">
-        <Alert severity="info">Loading calibration...</Alert>
+      <Container maxWidth="sm" sx={{ textAlign: 'center', py: 4 }}>
+        <CircularProgress />
+        <Typography sx={{ mt: 2 }}>{t('distance.loadingCalibration', 'Loading calibration...')}</Typography>
       </Container>
     );
   }
@@ -149,7 +155,7 @@ const DistanceMeter: React.FC = () => {
   if (!calibration) {
      return (
       <Container maxWidth="sm">
-        <Alert severity="error">Could not load calibration data.</Alert>
+        <Alert severity="error">{t('distance.errorLoadingCalibration', 'Could not load calibration data.')}</Alert>
       </Container>
     );
   }
@@ -158,7 +164,7 @@ const DistanceMeter: React.FC = () => {
     <Container maxWidth="sm">
       <Paper sx={{ p: 3, textAlign: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Distance Meter
+          {t('distance.title', 'Distance Meter')}
         </Typography>
         
         <Box sx={{ my: 4, position: 'relative', display: 'inline-block' }}>
@@ -198,12 +204,12 @@ const DistanceMeter: React.FC = () => {
             <Typography variant="h3" component="div" color="primary">
               {steps}
             </Typography>
-            <Typography variant="caption">Steps</Typography>
+            <Typography variant="caption">{t('distance.stepsLabel', 'Steps')}</Typography>
           </Box>
         </Box>
         
         <Typography variant="h5" sx={{ my: 2 }}>
-          Distance: {formattedDistance}
+          {t('distance.distanceLabel', 'Distance')}: {formattedDistance}
         </Typography>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -217,19 +223,19 @@ const DistanceMeter: React.FC = () => {
           size="large"
           sx={{ minWidth: '200px' }}
         >
-          {isTracking ? "Stop Measurement" : "Start Measurement"}
+          {isTracking ? t('distance.stopButton', "Stop Measurement") : t('distance.startButton', "Start Measurement")}
         </Button>
         
         {isTracking && (
           <Alert severity="info" sx={{ mt: 2 }}>
-            For best results, carry your phone in your hand or front pocket and walk normally.
+            {t('distance.trackingTip', 'For best results, carry your phone in your hand or front pocket and walk normally.')}
           </Alert>
         )}
         
         <Box sx={{ mt: 4, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-          <Typography variant="h6" gutterBottom>Settings</Typography>
+          <Typography variant="h6" gutterBottom>{t('distance.settingsTitle', 'Settings')}</Typography>
           <TextField
-            label="Stride Length (meters)"
+            label={t('distance.strideLabel', "Stride Length (meters)")}
             type="number"
             value={calibration.strideLength}
             onChange={handleStrideChange}
@@ -239,7 +245,7 @@ const DistanceMeter: React.FC = () => {
           />
           <FormControlLabel
             control={<Switch checked={useMetric} onChange={handleUnitToggle} />}
-            label={useMetric ? "Using Metric (m)" : "Using Imperial (ft)"}
+            label={useMetric ? t('distance.unitMetric', "Using Metric (m)") : t('distance.unitImperial', "Using Imperial (ft)")}
           />
         </Box>
       </Paper>

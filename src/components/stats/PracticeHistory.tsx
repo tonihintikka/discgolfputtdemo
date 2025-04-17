@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { sessionStorage } from '../../services/storage/storageService';
 import { DrillSession } from '../../types/drills';
 import { getDrillType } from '../../services/drillService';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Filters for practice sessions
 type FilterOption = 'all' | 'week' | 'month' | 'completed';
@@ -35,16 +36,30 @@ const PracticeHistory: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterOption>('all');
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   // Fetch sessions on component mount and when filter changes
   useEffect(() => {
     const fetchSessions = async () => {
       setLoading(true);
+      setError(null); // Clear previous errors
       try {
-        const allSessions = await sessionStorage.getSessions();
+        const sessionRecords = await sessionStorage.getSessions(); // Get SessionRecord[]
         
+        // Fetch attempts for each session and combine into DrillSession[]
+        const sessionsWithAttempts: DrillSession[] = await Promise.all(
+          sessionRecords.map(async (record) => {
+            const attempts = await sessionStorage.getSessionAttempts(record.id!); // Fetch attempts
+            return {
+              ...record,
+              id: String(record.id), // Ensure id is string for DrillSession type
+              attempts // Add attempts array
+            } as DrillSession; // Cast to DrillSession
+          })
+        );
+
         // Apply filters
-        let filteredSessions = [...allSessions];
+        let filteredSessions = [...sessionsWithAttempts];
         
         const now = new Date();
         if (filter === 'week') {
@@ -67,16 +82,16 @@ const PracticeHistory: React.FC = () => {
         });
         
         setSessions(filteredSessions);
-        setLoading(false);
       } catch (err) {
         console.error('Error fetching sessions:', err);
-        setError('Failed to load practice history');
+        setError(t('pages.history.loadError', 'Failed to load practice history'));
+      } finally {
         setLoading(false);
       }
     };
     
     fetchSessions();
-  }, [filter]);
+  }, [filter, t]); // Add t to dependencies
   
   // Format date for display
   const formatDate = (timestamp: number): string => {
@@ -93,7 +108,7 @@ const PracticeHistory: React.FC = () => {
   // Get drill name from drill type
   const getDrillName = (drillTypeId: string): string => {
     const drillType = getDrillType(drillTypeId);
-    return drillType ? drillType.name : 'Unknown Drill';
+    return drillType ? drillType.name : t('pages.history.unknownDrill', 'Unknown Drill');
   };
   
   // Handle view session details
@@ -110,7 +125,7 @@ const PracticeHistory: React.FC = () => {
     return (
       <Container maxWidth="md" sx={{ textAlign: 'center', py: 4 }}>
         <CircularProgress />
-        <Typography sx={{ mt: 2 }}>Loading practice history...</Typography>
+        <Typography sx={{ mt: 2 }}>{t('pages.history.loading', 'Loading practice history...')}</Typography>
       </Container>
     );
   }
@@ -128,27 +143,27 @@ const PracticeHistory: React.FC = () => {
       <Paper sx={{ p: 3, my: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
           <Typography variant="h4" component="h1">
-            Practice History
+            {t('pages.history.title', 'Practice History')}
           </Typography>
           
           <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
-            <InputLabel id="filter-label">Filter</InputLabel>
+            <InputLabel id="filter-label">{t('pages.history.filterLabel', 'Filter')}</InputLabel>
             <Select
               labelId="filter-label"
               value={filter}
               onChange={handleFilterChange}
-              label="Filter"
+              label={t('pages.history.filterLabel', 'Filter')}
             >
-              <MenuItem value="all">All Sessions</MenuItem>
-              <MenuItem value="week">Last 7 Days</MenuItem>
-              <MenuItem value="month">Last 30 Days</MenuItem>
-              <MenuItem value="completed">Completed Only</MenuItem>
+              <MenuItem value="all">{t('pages.history.filterAll', 'All Sessions')}</MenuItem>
+              <MenuItem value="week">{t('pages.history.filterWeek', 'Last 7 Days')}</MenuItem>
+              <MenuItem value="month">{t('pages.history.filterMonth', 'Last 30 Days')}</MenuItem>
+              <MenuItem value="completed">{t('pages.history.filterCompleted', 'Completed Only')}</MenuItem>
             </Select>
           </FormControl>
         </Box>
         
         {sessions.length === 0 ? (
-          <Alert severity="info">No practice sessions found. Start practicing to record your sessions!</Alert>
+          <Alert severity="info">{t('pages.history.noSessions', 'No practice sessions found. Start practicing to record your sessions!')}</Alert>
         ) : (
           <List>
             {sessions.map((session) => (
@@ -169,14 +184,14 @@ const PracticeHistory: React.FC = () => {
                     {session.completed ? (
                       <Chip 
                         size="small" 
-                        label="Completed" 
+                        label={t('pages.history.completed', 'Completed')}
                         color="success" 
                         sx={{ mr: 1 }}
                       />
                     ) : (
                       <Chip 
                         size="small" 
-                        label="Unfinished" 
+                        label={t('pages.history.unfinished', 'Unfinished')}
                         color="warning" 
                         sx={{ mr: 1 }}
                       />

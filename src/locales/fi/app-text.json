@@ -45,20 +45,90 @@
       "advanced": "edistynyt"
     },
     "distance": {
-      "title": "Etäisyyden seuranta",
-      "stepCount": "askelta",
-      "calibration": "Kalibrointi",
-      "startTracking": "Aloita seuranta",
-      "stopTracking": "Lopeta seuranta",
-      "reset": "Nollaa",
-      "settings": "Asetukset"
+      "title": "Etäisyysmittari",
+      "stepsLabel": "Askeleet",
+      "distanceLabel": "Etäisyys",
+      "startButton": "Aloita mittaus",
+      "stopButton": "Lopeta mittaus",
+      "trackingTip": "Parhaan tuloksen saat pitämällä puhelinta kädessä tai etutaskussa ja kävelemällä normaalisti.",
+      "settingsTitle": "Asetukset",
+      "strideLabel": "Askeleen pituus (metriä)",
+      "unitMetric": "Käytössä metrijärjestelmä (m)",
+      "unitImperial": "Käytössä brittiläinen järjestelmä (ft)",
+      "loadingCalibration": "Ladataan kalibrointia...",
+      "errorLoadingCalibration": "Kalibrointitietojen lataus epäonnistui."
     },
     "history": {
-      "title": "Historia",
-      "noSessions": "Ei vielä harjoituksia.",
+      "title": "Harjoitushistoria",
+      "tabs": {
+        "practice": "Harjoitushistoria",
+        "distance": "Etäisyysmittaukset",
+        "data": "Tietojen hallinta"
+      },
+      "distanceComingSoonTitle": "Etäisyyshistoria tulossa pian...",
+      "distanceComingSoonDesc": "Näytämme etäisyysmittaustesi historian täällä tulevassa päivityksessä.",
+      "loadError": "Harjoitushistorian lataus epäonnistui",
+      "unknownDrill": "Tuntematon harjoitus",
+      "loading": "Ladataan harjoitushistoriaa...",
+      "filterLabel": "Suodatin",
+      "filterAll": "Kaikki harjoitukset",
+      "filterWeek": "Viimeiset 7 päivää",
+      "filterMonth": "Viimeiset 30 päivää",
+      "filterCompleted": "Vain suoritetut",
+      "noSessions": "Ei harjoituksia löydetty. Aloita harjoittelu tallentaaksesi harjoituksesi!",
       "completed": "Suoritettu",
-      "incomplete": "Kesken"
+      "unfinished": "Keskeneräinen"
     }
+  },
+  "dataManagement": {
+    "title": "Tietojen hallinta",
+    "localStorageTitle": "Vain paikallinen tallennus",
+    "localStorageDesc": "Kaikki tiedot tallennetaan paikallisesti laitteellesi. Mitään tietoja ei lähetetä palvelimelle.",
+    "statsTitle": "Tallennustilan tilastot",
+    "statsSessions": "Harjoitukset",
+    "statsAttempts": "Puttiyritykset",
+    "statsMeasurements": "Mittaukset",
+    "statsTotal": "Tietueita yhteensä",
+    "clearDataTitle": "Tyhjennä tiedot",
+    "clearSessionsButton": "Tyhjennä harjoitukset",
+    "clearMeasurementsButton": "Tyhjennä etäisyysmittaukset",
+    "clearAllButton": "Tyhjennä kaikki tiedot",
+    "confirmDialogTitle": "Vahvista tietojen poisto",
+    "confirmClearAll": "Tämä poistaa pysyvästi KAIKKI tietosi, mukaan lukien harjoitukset, etäisyysmittaukset ja asetukset.",
+    "confirmClearSessions": "Tämä poistaa pysyvästi kaikki harjoituksesi ja yrityksesi.",
+    "confirmClearMeasurements": "Tämä poistaa pysyvästi kaikki etäisyysmittauksesi.",
+    "confirmWarning": "Tätä toimintoa ei voi perua.",
+    "confirmDeleteButton": "Vahvista poisto",
+    "clearAllSuccess": "Kaikki tiedot tyhjennetty onnistuneesti",
+    "clearSessionsSuccess": "Harjoitukset tyhjennetty onnistuneesti",
+    "clearMeasurementsSuccess": "Etäisyysmittaukset tyhjennetty onnistuneesti",
+    "clearError": "Virhe tietojen tyhjennyksessä"
+  },
+  "summary": {
+    "resultsTitle": "Tulokset",
+    "sessionCompleted": "Harjoitus suoritettu",
+    "atTime": "klo",
+    "overallPerformance": "Kokonaisuoritus",
+    "madeOfTotal": "{made} onnistunutta / {total} putista",
+    "performanceByDistance": "Suoritus etäisyyden mukaan",
+    "tableDistance": "Etäisyys",
+    "tableAttempts": "Yritykset",
+    "tableMade": "Onnistuneet",
+    "tablePercentage": "Prosentti",
+    "allAttempts": "Kaikki yritykset",
+    "tableRound": "Kierros",
+    "tableStance": "Asento",
+    "tableResult": "Tulos",
+    "newSessionButton": "Uusi harjoitus",
+    "errorNoSessionId": "Harjoituksen ID:tä ei annettu",
+    "errorSessionNotFound": "Harjoitusta ei löytynyt",
+    "errorDrillNotFound": "Harjoitustyyppiä ei löytynyt",
+    "errorLoading": "Harjoitustietojen lataus epäonnistui",
+    "loading": "Ladataan harjoitustietoja..."
+  },
+  "units": {
+    "feet": "ft",
+    "meters": "m"
   },
   "stances": {
     "normal": "Normaali",
@@ -78,7 +148,7 @@
     "description": "Kuvaus",
     "instructions": "Ohjeet",
     "distanceRange": "Etäisyysalue",
-    "back": "Takaisin harjoituksiin",
+    "backToDrills": "Takaisin harjoituksiin",
     "startDrill": "Aloita harjoitus",
     "loading": "Ladataan harjoituksen tietoja...",
     "round": "Kierros",
@@ -92,6 +162,7 @@
     "madeIt": "Sisään",
     "missed": "Ohi",
     "stance": "Asento",
-    "progress": "Edistyminen"
+    "progress": "Edistyminen",
+    "continue": "Jatka"
   }
 } 

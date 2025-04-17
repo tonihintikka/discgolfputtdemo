@@ -13,7 +13,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Stack
+  Stack,
+  CircularProgress
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DrillSession, DrillType, PuttAttempt } from '../../types/drills';
@@ -22,10 +23,12 @@ import { getSession, getSessionAttempts } from '../../services/storage/storageSe
 import DistanceDisplay from '../common/DistanceDisplay';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { useLanguage } from '../../context/LanguageContext';
 
 const DrillSummary: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const [session, setSession] = useState<DrillSession | undefined>(undefined);
   const [drill, setDrill] = useState<DrillType | undefined>(undefined);
@@ -36,47 +39,65 @@ const DrillSummary: React.FC = () => {
   // Fetch session data
   useEffect(() => {
     const fetchSessionData = async () => {
+      setLoading(true);
+      setError(null);
       if (!sessionId) {
-        setError('No session ID provided');
+        setError(t('summary.errorNoSessionId', 'No session ID provided'));
         setLoading(false);
         return;
       }
       
       try {
-        // Get session
-        const sessionData = await getSession(parseInt(sessionId));
-        if (!sessionData) {
-          setError('Session not found');
+        const numericSessionId = parseInt(sessionId);
+        // Get session record
+        const sessionRecord = await getSession(numericSessionId);
+        if (!sessionRecord) {
+          setError(t('summary.errorSessionNotFound', 'Session not found'));
           setLoading(false);
           return;
         }
         
-        setSession(sessionData);
+        // Get attempts records
+        const attemptRecords = await getSessionAttempts(numericSessionId);
+        
+        // Map attempts to PuttAttempt type
+        const puttAttempts: PuttAttempt[] = attemptRecords.map(record => ({
+          ...record,
+          id: String(record.id),
+          drillId: String(sessionRecord.id), // Map sessionId back to drillId for PuttAttempt
+          result: record.result as 'hit' | 'miss' // Ensure result is typed correctly
+        }));
+        
+        // Construct the DrillSession object
+        const drillSession: DrillSession = {
+          ...sessionRecord,
+          id: String(sessionRecord.id),
+          attempts: puttAttempts
+        };
+        
+        setSession(drillSession);
         
         // Get drill type
-        const drillType = getDrillType(sessionData.drillTypeId);
+        const drillType = getDrillType(drillSession.drillTypeId);
         if (!drillType) {
-          setError('Drill type not found');
+          setError(t('summary.errorDrillNotFound', 'Drill type not found'));
           setLoading(false);
           return;
         }
         
         setDrill(drillType);
+        setAttempts(puttAttempts); // Set the correctly typed attempts
         
-        // Get attempts
-        const sessionAttempts = await getSessionAttempts(parseInt(sessionId));
-        setAttempts(sessionAttempts);
-        
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching session data:', error);
-        setError('Failed to load session data');
+        setError(t('summary.errorLoading', 'Failed to load session data'));
+      } finally {
         setLoading(false);
       }
     };
     
     fetchSessionData();
-  }, [sessionId]);
+  }, [sessionId, t]); // Add t to dependencies
   
   // Group attempts by distance
   const getAttemptsByDistance = () => {
@@ -122,8 +143,9 @@ const DrillSummary: React.FC = () => {
   
   if (loading) {
     return (
-      <Container maxWidth="md">
-        <Alert severity="info">Loading session data...</Alert>
+      <Container maxWidth="md" sx={{ textAlign: 'center', py: 4 }}>
+        <CircularProgress />
+        <Typography sx={{ mt: 2 }}>{t('summary.loading', 'Loading session data...')}</Typography>
       </Container>
     );
   }
@@ -131,13 +153,13 @@ const DrillSummary: React.FC = () => {
   if (error || !session || !drill) {
     return (
       <Container maxWidth="md">
-        <Alert severity="error">{error || 'Failed to load session data'}</Alert>
+        <Alert severity="error">{error || t('summary.errorLoading', 'Failed to load session data')}</Alert>
         <Button 
           variant="contained" 
           onClick={handleBackToDrills}
           sx={{ mt: 2 }}
         >
-          Back to Drills
+          {t('common.backToDrills', 'Back to Drills')}
         </Button>
       </Container>
     );
@@ -150,12 +172,12 @@ const DrillSummary: React.FC = () => {
     <Container maxWidth="md">
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          {drill.name} Results
+          {drill.name} {t('summary.resultsTitle', 'Results')}
         </Typography>
         
         <Box sx={{ my: 2 }}>
           <Typography variant="body2" color="text.secondary">
-            Session completed on {new Date(session.endTime || Date.now()).toLocaleDateString()} at {new Date(session.endTime || Date.now()).toLocaleTimeString()}
+            {t('summary.sessionCompleted', 'Session completed on')} {new Date(session.endTime || Date.now()).toLocaleDateString()} {t('summary.atTime', 'at')} {new Date(session.endTime || Date.now()).toLocaleTimeString()}
           </Typography>
         </Box>
         
@@ -163,7 +185,7 @@ const DrillSummary: React.FC = () => {
         
         <Box sx={{ textAlign: 'center', my: 4 }}>
           <Typography variant="h6" gutterBottom>
-            Overall Performance
+            {t('summary.overallPerformance', 'Overall Performance')}
           </Typography>
           
           <Typography variant="h2" color="primary" sx={{ my: 2 }}>
@@ -171,7 +193,7 @@ const DrillSummary: React.FC = () => {
           </Typography>
           
           <Typography variant="body1">
-            Made {overallStats.made} of {overallStats.total} putts
+            {t('summary.madeOfTotal', 'Made {made} of {total} putts', { made: overallStats.made, total: overallStats.total })}
           </Typography>
         </Box>
         
@@ -179,17 +201,17 @@ const DrillSummary: React.FC = () => {
         
         <Box sx={{ my: 4 }}>
           <Typography variant="h6" gutterBottom>
-            Performance by Distance
+            {t('summary.performanceByDistance', 'Performance by Distance')}
           </Typography>
           
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Distance</TableCell>
-                  <TableCell align="center">Attempts</TableCell>
-                  <TableCell align="center">Made</TableCell>
-                  <TableCell align="center">Percentage</TableCell>
+                  <TableCell>{t('summary.tableDistance', 'Distance')}</TableCell>
+                  <TableCell align="center">{t('summary.tableAttempts', 'Attempts')}</TableCell>
+                  <TableCell align="center">{t('summary.tableMade', 'Made')}</TableCell>
+                  <TableCell align="center">{t('summary.tablePercentage', 'Percentage')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -220,17 +242,17 @@ const DrillSummary: React.FC = () => {
         
         <Box sx={{ my: 4 }}>
           <Typography variant="h6" gutterBottom>
-            All Attempts
+            {t('summary.allAttempts', 'All Attempts')}
           </Typography>
           
           <TableContainer>
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>Round</TableCell>
-                  <TableCell>Distance</TableCell>
-                  <TableCell>Stance</TableCell>
-                  <TableCell align="center">Result</TableCell>
+                  <TableCell>{t('summary.tableRound', 'Round')}</TableCell>
+                  <TableCell>{t('summary.tableDistance', 'Distance')}</TableCell>
+                  <TableCell>{t('summary.tableStance', 'Stance')}</TableCell>
+                  <TableCell align="center">{t('summary.tableResult', 'Result')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -240,7 +262,7 @@ const DrillSummary: React.FC = () => {
                     <TableCell>
                       <DistanceDisplay meters={attempt.distance} showIcon={false} variant="body2" />
                     </TableCell>
-                    <TableCell sx={{ textTransform: 'capitalize' }}>{attempt.stance}</TableCell>
+                    <TableCell sx={{ textTransform: 'capitalize' }}>{t(`stances.${attempt.stance}`, attempt.stance)}</TableCell>
                     <TableCell align="center">
                       {attempt.result === 'hit' 
                         ? <CheckCircleIcon color="success" /> 
@@ -258,14 +280,14 @@ const DrillSummary: React.FC = () => {
             variant="outlined" 
             onClick={handleBackToDrills}
           >
-            Back to Drills
+            {t('common.backToDrills', 'Back to Drills')}
           </Button>
           
           <Button 
             variant="contained" 
             onClick={() => navigate('/drills')}
           >
-            New Practice Session
+            {t('summary.newSessionButton', 'New Practice Session')}
           </Button>
         </Box>
       </Paper>

@@ -1,6 +1,6 @@
 # Disc Golf Training PWA
 
-![Disc Golf Training App Demo](docs/IMG_3926.PNG)
+![Disc Golf Training App Demo](docs/IMG_3928.PNG)
 
 A Progressive Web App for disc golf putting practice and training. This application helps disc golfers track their putting sessions, measure distances, and improve their game - all while working offline on the course.
 
@@ -158,6 +158,16 @@ This PWA works offline through:
 - Backup and export functionality
 - User accounts (optional) for cloud sync
 - Social sharing of practice results
+
+### Translation To-Do
+
+- **HistoryPage:** Translate 'Unknown Drill' string.
+- **PracticeHistory:** Translate 'Failed to load practice history' error and 'Unknown Drill'. Review filter option display.
+- **DataManagement:** Translate snackbar messages for data clearing actions and errors. Translate confirmation dialog text/buttons (Cancel, Confirm).
+- **PedometerSettings:** Review component for any untranslated labels or descriptions.
+- **DrillSummary:** Translate error messages ('No session ID provided', 'Session not found', etc.). Translate table headers and action buttons if needed.
+- **DistanceMeter:** Translate 'Could not load calibration data' error. Translate button labels (Start/Stop Tracking, Reset, Calibrate).
+- **General UI:** Ensure consistent translation for common words like "Continue", "Confirm", "Error" using `t()`.
 
 ## License
 
