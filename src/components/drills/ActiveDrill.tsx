@@ -45,23 +45,27 @@ const ActiveDrill: React.FC = () => {
     const initializeDrill = async () => {
       try {
         setLoading(true);
+        setError(null); // Reset any previous errors
         
         // If we have a sessionId, get the session and then the drill
         if (sessionId) {
+          console.log('Loading session with ID:', sessionId);
           const existingSession = await sessionStorage.getSession(sessionId);
           
           if (!existingSession) {
-            setError('Session not found');
+            console.error(`Session not found with ID: ${sessionId}`);
+            setError(`Session not found with ID: ${sessionId}`);
             setLoading(false);
             return;
           }
           
+          console.log('Session loaded:', existingSession);
           setSession(existingSession);
           const drillTypeId = existingSession.drillTypeId;
           const drillType = getDrillType(drillTypeId);
           
           if (!drillType) {
-            setError('Drill type not found');
+            setError(`Drill type not found for ID: ${drillTypeId}`);
             setLoading(false);
             return;
           }
@@ -80,7 +84,8 @@ const ActiveDrill: React.FC = () => {
         else if (drillId) {
           const drillType = getDrillType(drillId);
           if (!drillType) {
-            navigate('/drills');
+            setError(`Drill type not found for ID: ${drillId}`);
+            setLoading(false);
             return;
           }
           
@@ -90,15 +95,25 @@ const ActiveDrill: React.FC = () => {
           // Create a new session
           const newSession = createDrillSession(drillId);
           setSession(newSession);
+          
+          // Also save the session to storage
+          try {
+            await sessionStorage.saveSession(newSession);
+          } catch (saveError) {
+            console.error('Error saving new session:', saveError);
+            // Continue anyway as we have the session in memory
+          }
         }
         else {
           setError('No drill ID or session ID provided');
+          setLoading(false);
+          return;
         }
         
         setLoading(false);
       } catch (err) {
         console.error('Error initializing drill:', err);
-        setError('Failed to initialize drill');
+        setError(`Failed to initialize drill: ${err instanceof Error ? err.message : String(err)}`);
         setLoading(false);
       }
     };

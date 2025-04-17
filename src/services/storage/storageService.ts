@@ -289,29 +289,73 @@ export const settingsStorage = {
 
 export const sessionStorage = {
   getSession: async (id: string | number): Promise<DrillSession | undefined> => {
-    // Handle if id is a string (for backward compatibility)
-    const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
-    return getSession(numericId) as Promise<DrillSession | undefined>;
+    try {
+      let sessionRecord: SessionRecord | undefined;
+      
+      // Check if id is a string that could be a UUID (not a numeric string)
+      if (typeof id === 'string' && isNaN(Number(id))) {
+        // For UUID strings, we need to find it by querying all sessions
+        const allSessions = await getSessions();
+        // Find the session with matching string ID
+        sessionRecord = allSessions.find(s => String(s.id) === id);
+      } else {
+        // Handle numeric IDs (either direct numbers or numeric strings)
+        const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+        sessionRecord = await getSession(numericId);
+      }
+      
+      if (!sessionRecord) {
+        return undefined;
+      }
+      
+      // Get attempts for this session
+      const attempts = await getSessionAttempts(sessionRecord.id as number);
+      
+      // Return a complete DrillSession object
+      return {
+        ...sessionRecord,
+        id: sessionRecord.id !== undefined ? String(sessionRecord.id) : '',
+        attempts: attempts as unknown as PuttAttempt[]
+      } as DrillSession;
+    } catch (error) {
+      console.error(`Error getting session ${id}:`, error);
+      return undefined;
+    }
   },
   saveSession: async (session: DrillSession): Promise<void> => {
-    if (typeof session.id === 'string') {
-      // Convert existing string id sessions to the new format
-      const newSession: SessionRecord = {
+    try {
+      // Always extract the drill-related properties to avoid database schema mismatches
+      const sessionData: SessionRecord = {
         drillTypeId: session.drillTypeId,
         startTime: session.startTime,
         endTime: session.endTime,
         completed: session.completed,
         summary: session.summary
       };
-      await storeSession(newSession);
-    } else {
-      // Update existing numeric id session
-      if (typeof session.id === 'number') {
-        await updateSession(session.id, session as unknown as SessionRecord);
-      } else {
-        // New session without id
-        await storeSession(session as unknown as SessionRecord);
+      
+      // For new sessions with string IDs (like UUIDs), create a new DB record
+      if (typeof session.id === 'string' && isNaN(Number(session.id))) {
+        // This is likely a UUID that hasn't been saved yet
+        await storeSession(sessionData);
+      } 
+      // For existing numeric IDs, update the record
+      else if (typeof session.id === 'number' || !isNaN(Number(session.id))) {
+        const numericId = typeof session.id === 'number' ? session.id : parseInt(session.id, 10);
+        // Only update if we have a valid numeric ID
+        if (!isNaN(numericId)) {
+          await updateSession(numericId, sessionData);
+        } else {
+          // Fallback for invalid ID - just store it
+          await storeSession(sessionData);
+        }
+      } 
+      // Handle any other cases (shouldn't normally happen)
+      else {
+        await storeSession(sessionData);
       }
+    } catch (error) {
+      console.error('Error saving session:', error);
+      throw error;
     }
   },
   saveAttempt: async (attempt: PuttAttempt): Promise<void> => {
