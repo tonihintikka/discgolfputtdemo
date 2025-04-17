@@ -1,5 +1,11 @@
 {
   "appName": "Disc Golf Treeni",
+  "navigation": {
+    "drills": "Harjoitukset",
+    "distance": "Etäisyys",
+    "history": "Historia",
+    "settings": "Asetukset"
+  },
   "pages": {
     "settings": {
       "title": "Asetukset",
@@ -22,10 +28,13 @@
       "title": "Valitse harjoitus",
       "circle1": "Rinki 1X",
       "circle1Desc": "Harjoitusputtit 3-10 metristä (10-33 jalkaa)",
+      "circle1Inst": "Tee 5 puttia jokaiselta etäisyydeltä. Keskity yhtenäiseen muotoon ja varmaan irrotukseen.",
       "circle2": "Rinki 2",
       "circle2Desc": "Harjoitusputtit 10-20 metristä (33-66 jalkaa)",
+      "circle2Inst": "Tee 5 puttia jokaiselta etäisyydeltä. Keskity etäisyyden hallintaan ja kaareen.",
       "fivePutts": "5/5 Puttipeli",
       "fivePuttsDesc": "Tee 5 peräkkäistä puttia edetäksesi seuraavaan asemaan",
+      "fivePuttsInst": "Aloita lähimmältä etäisyydeltä. Tee 5 peräkkäistä puttia edetäksesi seuraavalle etäisyydelle. Jos missaat putin, aloitat uudelleen samalta etäisyydeltä.",
       "difficulty": "Vaikeustaso",
       "beginner": "aloittelija",
       "intermediate": "keskitaso",
@@ -52,6 +61,21 @@
     "cancel": "Peruuta",
     "delete": "Poista",
     "edit": "Muokkaa",
-    "confirm": "Vahvista"
+    "confirm": "Vahvista",
+    "rounds": "Kierrokset",
+    "description": "Kuvaus",
+    "instructions": "Ohjeet",
+    "distanceRange": "Etäisyysalue",
+    "back": "Takaisin harjoituksiin",
+    "startDrill": "Aloita harjoitus",
+    "loading": "Ladataan harjoitustietoja...",
+    "round": "Kierros",
+    "of": "/",
+    "takeYourPutt": "Tee putti ja merkitse tulos.",
+    "drillCompleted": "Harjoitus suoritettu!",
+    "made": "Osumia",
+    "putts": "puttia",
+    "viewResults": "Katso tulokset",
+    "restartDrill": "Aloita uudelleen"
   }
 } 

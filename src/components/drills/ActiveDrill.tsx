@@ -22,10 +22,12 @@ import DistanceDisplay from '../common/DistanceDisplay';
 import StanceSelector from '../common/StanceSelector';
 import DrillProgress from './DrillProgress';
 import PuttResult from './PuttResult';
+import { useLanguage } from '../../context/LanguageContext';
 
 const ActiveDrill: React.FC = () => {
   const { drillId } = useParams<{ drillId: string }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const [drill, setDrill] = useState<DrillType | undefined>(undefined);
   const [rounds, setRounds] = useState<DrillRound[]>([]);
@@ -57,6 +59,30 @@ const ActiveDrill: React.FC = () => {
   // Get the current round information
   const getCurrentRound = (): DrillRound | undefined => {
     return rounds.find(round => round.round === currentRound);
+  };
+  
+  // Helper to get translated drill name, description and instructions
+  const getDrillTranslation = (drill: DrillType) => {
+    let name = drill.name;
+    let instructions = drill.instructions;
+    
+    // Map the drill IDs to their translation keys
+    switch(drill.id) {
+      case 'circle-1x':
+        name = t('pages.drills.circle1', 'Circle 1X');
+        instructions = t('pages.drills.circle1Inst', 'Take 5 putts from each distance. Focus on consistent form and confident release.');
+        break;
+      case 'circle-2':
+        name = t('pages.drills.circle2', 'Circle 2');
+        instructions = t('pages.drills.circle2Inst', 'Take 5 putts from each distance. Focus on distance control and arc.');
+        break;
+      case '5-5-putts':
+        name = t('pages.drills.fivePutts', '5/5 Putts Game');
+        instructions = t('pages.drills.fivePuttsInst', 'Start at the closest distance. Make 5 consecutive putts to advance to the next distance. Miss a putt and you start over at that distance.');
+        break;
+    }
+    
+    return { name, instructions };
   };
   
   // Handle a putt result (hit or miss)
@@ -133,22 +159,23 @@ const ActiveDrill: React.FC = () => {
   if (!drill || !session) {
     return (
       <Container maxWidth="sm">
-        <Alert severity="info">Loading drill...</Alert>
+        <Alert severity="info">{t('common.loading', 'Loading drill...')}</Alert>
       </Container>
     );
   }
   
   const currentRoundInfo = getCurrentRound();
+  const { name, instructions } = getDrillTranslation(drill);
   
   return (
     <Container maxWidth="sm">
       <Paper sx={{ p: 3, mb: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          {drill.name}
+          {name}
         </Typography>
         
         <Typography variant="body1" color="text.secondary" paragraph>
-          {drill.instructions}
+          {instructions}
         </Typography>
         
         <Divider sx={{ my: 2 }} />
@@ -163,7 +190,7 @@ const ActiveDrill: React.FC = () => {
             
             <Box sx={{ my: 3, textAlign: 'center' }}>
               <Typography variant="h5" gutterBottom>
-                Round {currentRound} of {rounds.length}
+                {t('common.round', 'Round')} {currentRound} {t('common.of', 'of')} {rounds.length}
               </Typography>
               
               {currentRoundInfo && (
@@ -177,7 +204,7 @@ const ActiveDrill: React.FC = () => {
                   </Box>
                   
                   <Typography variant="body1" sx={{ mb: 2 }}>
-                    {currentRoundInfo.instructions || "Take your putt and record the result."}
+                    {currentRoundInfo.instructions || t('common.takeYourPutt', 'Take your putt and record the result.')}
                   </Typography>
                   
                   <Box sx={{ my: 2 }}>
@@ -196,13 +223,13 @@ const ActiveDrill: React.FC = () => {
         ) : (
           <Box sx={{ textAlign: 'center', py: 3 }}>
             <Typography variant="h5" gutterBottom>
-              Drill Completed!
+              {t('common.drillCompleted', 'Drill Completed!')}
             </Typography>
             
             {session.summary && (
               <Box sx={{ my: 2 }}>
                 <Typography variant="body1">
-                  Made: {session.summary.madeAttempts} / {session.summary.totalAttempts} putts
+                  {t('common.made', 'Made')}: {session.summary.madeAttempts} / {session.summary.totalAttempts} {t('common.putts', 'putts')}
                 </Typography>
                 <Typography variant="h4" color="primary">
                   {session.summary.makePercentage.toFixed(1)}%
@@ -216,14 +243,14 @@ const ActiveDrill: React.FC = () => {
                 color="primary"
                 onClick={handleViewResults}
               >
-                View Results
+                {t('common.viewResults', 'View Results')}
               </Button>
               
               <Button 
                 variant="outlined"
                 onClick={handleRestart}
               >
-                Restart Drill
+                {t('common.restartDrill', 'Restart Drill')}
               </Button>
             </Stack>
           </Box>
