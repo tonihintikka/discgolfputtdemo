@@ -1,0 +1,57 @@
+{
+  "appName": "Disc Golf Training",
+  "pages": {
+    "settings": {
+      "title": "Settings",
+      "languageSettings": "Language Settings",
+      "appPreferences": "App Preferences",
+      "dataManagement": "Data Management",
+      "about": "About",
+      "darkMode": "Dark Mode",
+      "darkModeDesc": "Use dark color scheme throughout the app",
+      "saveStepData": "Save Step Data",
+      "saveStepDataDesc": "Store step counts and distances for later review",
+      "notifications": "Notifications",
+      "notificationsDesc": "Enable push notifications (practice reminders, etc.)",
+      "clearDataButton": "Clear All Data",
+      "clearDataDesc": "Clear all application data including saved sessions, settings, and cached content. This action cannot be undone.",
+      "version": "Version",
+      "madeWith": "Made with love for disc golfers"
+    },
+    "drills": {
+      "title": "Select a Drill",
+      "circle1": "Circle 1X",
+      "circle1Desc": "Practice putt from 3-10 meters (10-33 feet)",
+      "circle2": "Circle 2",
+      "circle2Desc": "Practice putt from 10-20 meters (33-66 feet)",
+      "fivePutts": "5/5 Putts Game",
+      "fivePuttsDesc": "Make 5 consecutive putts to advance to the next station",
+      "difficulty": "Difficulty",
+      "beginner": "beginner",
+      "intermediate": "intermediate",
+      "advanced": "advanced"
+    },
+    "distance": {
+      "title": "Distance Tracker",
+      "stepCount": "steps",
+      "calibration": "Calibration",
+      "startTracking": "Start Tracking",
+      "stopTracking": "Stop Tracking",
+      "reset": "Reset",
+      "settings": "Settings"
+    },
+    "history": {
+      "title": "History",
+      "noSessions": "No practice sessions yet.",
+      "completed": "Completed",
+      "incomplete": "Incomplete"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm"
+  }
+} 

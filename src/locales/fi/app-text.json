@@ -1,0 +1,57 @@
+{
+  "appName": "Disc Golf Treeni",
+  "pages": {
+    "settings": {
+      "title": "Asetukset",
+      "languageSettings": "Kieliasetukset",
+      "appPreferences": "Sovelluksen asetukset",
+      "dataManagement": "Tietojen hallinta",
+      "about": "Tietoja",
+      "darkMode": "Tumma tila",
+      "darkModeDesc": "Käytä tummaa väriteemaa sovelluksessa",
+      "saveStepData": "Tallenna askeleet",
+      "saveStepDataDesc": "Tallenna askelmäärät ja etäisyydet myöhempää tarkastelua varten",
+      "notifications": "Ilmoitukset",
+      "notificationsDesc": "Ota käyttöön push-ilmoitukset (harjoitusmuistutukset jne.)",
+      "clearDataButton": "Tyhjennä kaikki tiedot",
+      "clearDataDesc": "Tyhjennä kaikki sovelluksen tiedot, mukaan lukien tallennetut harjoitukset, asetukset ja välimuistitiedot. Tätä toimintoa ei voi kumota.",
+      "version": "Versio",
+      "madeWith": "Tehty rakkaudella frisbeegolfaajille"
+    },
+    "drills": {
+      "title": "Valitse harjoitus",
+      "circle1": "Rinki 1X",
+      "circle1Desc": "Harjoitusputtit 3-10 metristä (10-33 jalkaa)",
+      "circle2": "Rinki 2",
+      "circle2Desc": "Harjoitusputtit 10-20 metristä (33-66 jalkaa)",
+      "fivePutts": "5/5 Puttipeli",
+      "fivePuttsDesc": "Tee 5 peräkkäistä puttia edetäksesi seuraavaan asemaan",
+      "difficulty": "Vaikeustaso",
+      "beginner": "aloittelija",
+      "intermediate": "keskitaso",
+      "advanced": "edistynyt"
+    },
+    "distance": {
+      "title": "Etäisyysmittari",
+      "stepCount": "askelta",
+      "calibration": "Kalibrointi",
+      "startTracking": "Aloita seuranta",
+      "stopTracking": "Lopeta seuranta",
+      "reset": "Nollaa",
+      "settings": "Asetukset"
+    },
+    "history": {
+      "title": "Historia",
+      "noSessions": "Ei harjoituksia vielä.",
+      "completed": "Valmis",
+      "incomplete": "Kesken"
+    }
+  },
+  "common": {
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "delete": "Poista",
+    "edit": "Muokkaa",
+    "confirm": "Vahvista"
+  }
+} 
