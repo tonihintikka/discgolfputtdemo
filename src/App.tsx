@@ -68,6 +68,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/drills" replace />} />
                 <Route path="/drills" element={<DrillSelection onDrillSelect={(drill) => console.log('Drill selected:', drill.id)} />} />
                 <Route path="/drills/:drillId" element={<DrillInstructions />} />
+                <Route path="/drills/active/:sessionId" element={<ActiveDrill />} />
                 <Route path="/practice/:drillId" element={<DrillInstructions />} />
                 <Route path="/practice/:drillId/active" element={<ActiveDrill />} />
                 <Route path="/results/:sessionId" element={<DrillSummary />} />

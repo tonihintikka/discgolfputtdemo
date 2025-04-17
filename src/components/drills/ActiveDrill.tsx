@@ -18,6 +18,7 @@ import {
   recordPuttAttempt,
   completeDrillSession
 } from '../../services/drillService';
+import { sessionStorage } from '../../services/storage/storageService';
 import DistanceDisplay from '../common/DistanceDisplay';
 import StanceSelector from '../common/StanceSelector';
 import DrillProgress from './DrillProgress';
@@ -25,7 +26,7 @@ import PuttResult from './PuttResult';
 import { useLanguage } from '../../context/LanguageContext';
 
 const ActiveDrill: React.FC = () => {
-  const { drillId } = useParams<{ drillId: string }>();
+  const { drillId, sessionId } = useParams<{ drillId?: string, sessionId?: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
   
@@ -36,25 +37,74 @@ const ActiveDrill: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [notes, setNotes] = useState<string>('');
   const [stance, setStance] = useState<StanceType>('normal');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Initialize the drill and session
   useEffect(() => {
-    if (!drillId) return;
+    const initializeDrill = async () => {
+      try {
+        setLoading(true);
+        
+        // If we have a sessionId, get the session and then the drill
+        if (sessionId) {
+          const existingSession = await sessionStorage.getSession(sessionId);
+          
+          if (!existingSession) {
+            setError('Session not found');
+            setLoading(false);
+            return;
+          }
+          
+          setSession(existingSession);
+          const drillTypeId = existingSession.drillTypeId;
+          const drillType = getDrillType(drillTypeId);
+          
+          if (!drillType) {
+            setError('Drill type not found');
+            setLoading(false);
+            return;
+          }
+          
+          setDrill(drillType);
+          setRounds(getDrillRounds(drillTypeId));
+          
+          // Set current round based on attempts
+          if (existingSession.attempts && existingSession.attempts.length > 0) {
+            // Calculate which round we should be on based on attempts
+            const highestRound = Math.max(...existingSession.attempts.map(a => a.round));
+            setCurrentRound(highestRound);
+          }
+        }
+        // Otherwise use the drillId directly
+        else if (drillId) {
+          const drillType = getDrillType(drillId);
+          if (!drillType) {
+            navigate('/drills');
+            return;
+          }
+          
+          setDrill(drillType);
+          setRounds(getDrillRounds(drillId));
+          
+          // Create a new session
+          const newSession = createDrillSession(drillId);
+          setSession(newSession);
+        }
+        else {
+          setError('No drill ID or session ID provided');
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error initializing drill:', err);
+        setError('Failed to initialize drill');
+        setLoading(false);
+      }
+    };
     
-    const drillType = getDrillType(drillId);
-    if (!drillType) {
-      navigate('/drills');
-      return;
-    }
-    
-    setDrill(drillType);
-    setRounds(getDrillRounds(drillId));
-    
-    // Create a new session
-    const newSession = createDrillSession(drillId);
-    setSession(newSession);
-    
-  }, [drillId, navigate]);
+    initializeDrill();
+  }, [drillId, sessionId, navigate]);
   
   // Get the current round information
   const getCurrentRound = (): DrillRound | undefined => {
@@ -156,10 +206,34 @@ const ActiveDrill: React.FC = () => {
     }
   };
   
-  if (!drill || !session) {
+  if (loading) {
     return (
       <Container maxWidth="sm">
         <Alert severity="info">{t('common.loading', 'Loading drill...')}</Alert>
+      </Container>
+    );
+  }
+  
+  if (error) {
+    return (
+      <Container maxWidth="sm">
+        <Alert severity="error">{error}</Alert>
+      </Container>
+    );
+  }
+  
+  if (!drill || !session) {
+    return (
+      <Container maxWidth="sm">
+        <Alert severity="error">{t('common.noDrillData', 'Drill data not found. Please try again.')}</Alert>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => navigate('/drills')}
+          sx={{ mt: 2 }}
+        >
+          {t('common.backToDrills', 'Back to Drills')}
+        </Button>
       </Container>
     );
   }
